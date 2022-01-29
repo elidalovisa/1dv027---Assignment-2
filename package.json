@@ -17,6 +17,7 @@
   "license": "MIT",
   "private": true,
   "dependencies": {
+    "dotenv": "^14.3.2",
     "express": "^4.17.1",
     "helmet": "^4.6.0",
     "http-errors": "^1.8.1",
