@@ -9,6 +9,7 @@ import express from 'express'
 import dotenv from 'dotenv'
 import helmet from 'helmet'
 import logger from 'morgan'
+import { router } from '../routes/router.js'
 import { connectDB } from '../config/mongoose.js'
 dotenv.config()
 
@@ -27,6 +28,9 @@ const main = async () => {
 
   // Parse requests of the content type application/json.
   app.use(express.json({ limit: '500kb' }))
+
+  // Register routes.
+  app.use('/', router)
 
   // Error handler.
   app.use(function (err, req, res, next) {
