@@ -9,12 +9,7 @@ import mongoose from 'mongoose'
 
 // Create a schema.
 const schema = new mongoose.Schema({
-  user: {
-    type: String,
-    required: true,
-    trim: true,
-    minlength: 1
-  },
+
   fishType: {
     type: String,
     default: false

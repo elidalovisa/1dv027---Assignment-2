@@ -78,10 +78,14 @@ export class DataController {
       const response = await postData.json()
       // todo: change data dependng on what type of API Im doing
       const data = await Data.insert({
-        data: req.body.data,
-        contentType: req.body.contentType,
-        location: req.body.location,
-        description: req.body.description,
+        user: req.body.user, // todo: look up on how to add user
+        fishType: req.body.fishType,
+        position: req.body.position,
+        nameOfLocation: req.body.nameOfLocation,
+        city: req.body.city,
+        weight: req.body.weight,
+        length: req.body.length,
+        imageURL: req.body.imageURL,
         _id: response.id
       })
 
@@ -128,6 +132,53 @@ export class DataController {
   }
 
   /**
+   * Updates a specific fish catch.
+   *
+   * @param {object} req - Express request object.
+   * @param {object} res - Express response object.
+   * @param {Function} next - Express next middleware function.
+   */
+  async updatePartially (req, res, next) {
+    const catchId = req.params.id
+    console.log(catchId)
+    const postData = await fetch(process.env.DATA_URL + '/' + catchId,
+      {
+        method: 'POST',
+        headers: {
+          'PRIVATE-TOKEN': process.env.PERSONAL_ACCESS_TOKEN,
+          'Content-Type': 'application/json'
+        }
+      })
+    const response = await postData.json()
+    console.log(response)
+    try {
+      await req.data.update({
+        user: req.body.user,
+        fishType: req.body.fishType,
+        position: req.body.position,
+        nameOfLocation: req.body.nameOfLocation,
+        city: req.body.city,
+        weight: req.body.weight,
+        length: req.body.length,
+        imageURL: req.body.imageURL,
+        _id: response.id
+      })
+      res
+        .status(204)
+        .end()
+    } catch (error) {
+      let err = error
+      if (error.name === 'ValidationError') {
+        // Validation error(s).
+        err = createError(400)
+        err.innerException = error
+      }
+
+      next(err)
+    }
+  }
+
+  /**
    * Updates specific data.
    *
    * @param {object} req - Express request object.
@@ -136,8 +187,8 @@ export class DataController {
    */
   async update (req, res, next) {
     const data = {
-      data: req.body.data,
-      contentType: req.body.contentType
+      user: req.body.user // check user?
+    // add catchID? contentType: req.body.contentType
     }
     const postData = await fetch(process.env.DATA_URL,
       {
@@ -152,10 +203,14 @@ export class DataController {
     try {
       // todo: change data dependng on what type of API Im doing
       await req.data.update({
-        data: req.body.data,
-        contentType: req.body.contentType,
-        location: req.body.location,
-        description: req.body.description,
+        user: req.body.user,
+        fishType: req.body.fishType,
+        position: req.body.position,
+        nameOfLocation: req.body.nameOfLocation,
+        city: req.body.city,
+        weight: req.body.weight,
+        length: req.body.length,
+        imageURL: req.body.imageURL,
         _id: response.id
       })
       res

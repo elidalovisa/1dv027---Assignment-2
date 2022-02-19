@@ -14,7 +14,7 @@ const controller = new DataController()
 router.param('id', (req, res, next, id) => controller.loadData(req, res, next, id))
 
 // GET data
-router.get('/', (req, res, next) => controller.findAll(req, res, next))
+router.get('/all', (req, res, next) => controller.findAll(req, res, next))
 
 // POST data
 router.post('/', (req, res, next) => controller.addData(req, res, next))
