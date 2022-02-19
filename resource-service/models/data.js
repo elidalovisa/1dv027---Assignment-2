@@ -8,23 +8,38 @@
 import mongoose from 'mongoose'
 
 // Create a schema.
-// todo: change depending of what API im doing.
 const schema = new mongoose.Schema({
-  data: {
+  user: {
     type: String,
     required: true,
     trim: true,
     minlength: 1
   },
-  contentType: {
+  fishType: {
     type: String,
     default: false
   },
-  location: {
+  position: {
     type: String,
     default: false
   },
-  description: {
+  nameOfLocation: {
+    type: String,
+    default: false
+  },
+  city: {
+    type: String,
+    default: false
+  },
+  weight: {
+    type: String,
+    default: false
+  },
+  length: {
+    type: String,
+    default: false
+  },
+  imageURL: {
     type: String,
     default: false
   }
@@ -50,7 +65,7 @@ schema.virtual('id').get(function () {
 })
 
 /**
- * Gets all data.
+ * Gets all fish catches.
  *
  * @returns {Promise<Data[]>} The Promise to be fulfilled.
  */
@@ -59,9 +74,9 @@ schema.statics.getAll = async function () {
 }
 
 /**
- * Gets data by ID.
+ * Gets fish catch by ID.
  *
- * @param {string} id - The value of the id for the task to get.
+ * @param {string} id - The value of the id for the catch to get.
  * @returns {object} data.
  */
 schema.statics.getById = async function (id) {
@@ -69,7 +84,7 @@ schema.statics.getById = async function (id) {
 }
 
 /**
- * Inserts data.
+ * Inserts a neew fish catch.
  *
  * @param {object} data - ...
  * @param {string} data.description - ...
@@ -82,7 +97,7 @@ schema.statics.insert = async function (data) {
 }
 
 /**
- * Updates data.
+ * Updates data about fish catch.
  *
  * @param {object} data - ...
  * @param {string} data.description - ...
@@ -90,16 +105,32 @@ schema.statics.insert = async function (data) {
  * @returns {object} data - ...
  */
 schema.methods.update = async function (data) {
-  if (data.description?.localeCompare(this.description) !== 0) {
-    this.description = data.description
+  if (data.fishType?.localeCompare(this.fishType) !== 0) {
+    this.fishType = data.fishType
   }
 
-  if (data.data?.localeCompare(this.data) !== 0) {
-    this.data = data.data
+  if (data.position?.localeCompare(this.data) !== 0) {
+    this.position = data.position
   }
 
-  if (data.contentType?.localeCompare(this.contenType) !== 0) {
-    this.contenType = data.contenType
+  if (data.nameOfLocation?.localeCompare(this.nameOfLocation) !== 0) {
+    this.nameOfLocation = data.nameOfLocation
+  }
+
+  if (data.city?.localeCompare(this.city) !== 0) {
+    this.city = data.city
+  }
+
+  if (data.weight?.localeCompare(this.weight) !== 0) {
+    this.weight = data.weight
+  }
+
+  if (data.length?.localeCompare(this.length) !== 0) {
+    this.length = data.length
+  }
+
+  if (data.imageURL?.localeCompare(this.imageURL) !== 0) {
+    this.imageURL = data.imageURL
   }
 
   return this.save()
@@ -115,4 +146,4 @@ schema.methods.delete = async function () {
 }
 
 // Create a model using the schema.
-export const Data = mongoose.model('Data', schema)
+export const Data = mongoose.model('Catch', schema)
