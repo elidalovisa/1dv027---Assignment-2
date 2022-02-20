@@ -21,7 +21,7 @@ export class DataController {
    * @param {Function} next - Express next middleware function.
    * @param {string} id - The value of the id for the image to load.
    */
-  async loadData (req, res, next, id) {
+  async loadData(req, res, next, id) {
     try {
       // Get the data
       const data = await Data.getById(id)
@@ -48,7 +48,7 @@ export class DataController {
    * @param {object} res - Express response object.
    * @param {Function} next - Express next middleware function.
    */
-  async find (req, res, next) {
+  async find(req, res, next) {
     res.json(req.data)
   }
 
@@ -61,7 +61,7 @@ export class DataController {
    */
   async addData (req, res, next) {
     // todo: change data dependng on what type of API Im doing
-    const dataTest = {
+    const addFish = {
       data: req.body.data,
       contentType: req.body.contentType
     }
@@ -70,25 +70,41 @@ export class DataController {
         {
           method: 'POST',
           headers: {
-            //  'PRIVATE-TOKEN': process.env.PERSONAL_ACCESS_TOKEN,
+            'PRIVATE-TOKEN': process.env.PERSONAL_ACCESS_TOKEN,
             'Content-Type': 'application/json'
           },
-          body: JSON.stringify(dataTest)
+          body: JSON.stringify(addFish)
         })
       const response = await postData.json()
-      // todo: change data dependng on what type of API Im doing
       const data = await Data.insert({
-        user: req.body.user, // todo: look up on how to add user
+        user: req.body.user,
         fishType: req.body.fishType,
         position: req.body.position,
         nameOfLocation: req.body.nameOfLocation,
         city: req.body.city,
         weight: req.body.weight,
         length: req.body.length,
-        imageURL: req.body.imageURL,
         _id: response.id
+       /* links: [{
+          rel: 'self',
+          href: process.env.BASE_URL + response.id
+        },
+        {
+          rel: 'addFish',
+          method: 'POST',
+          href: process.env.BASE_URL + 'add-fish' + response.id
+        }]*/
       })
-
+      const urls = [{
+        rel: 'self',
+        href: process.env.BASE_URL + data._id
+      },
+      {
+        rel: 'addFish',
+        method: 'POST',
+        href: process.env.BASE_URL + 'api/v1/add-fish' + '/' + data._id
+      }]
+      data.links = urls
       res
         // .location(location.href)
         .status(201)
@@ -111,19 +127,22 @@ export class DataController {
    * @param {object} res - Express response object.
    * @param {Function} next - Express next middleware function.
    */
-  async findAll (req, res, next) {
+  async findAll(req, res, next) {
     try {
       // Get the data from Database.
+      console.log('hej')
       const fetchData = await fetch(process.env.DATA_URL,
         {
           method: 'GET',
           headers: {
-            // 'PRIVATE-TOKEN': process.env.PERSONAL_ACCESS_TOKEN,
+            'PRIVATE-TOKEN': process.env.PERSONAL_ACCESS_TOKEN,
             'Content-Type': 'application/json'
           }
         })
       const response = await fetchData.json()
-      // console.log(response)
+      console.log('hej1')
+
+      console.log(response)
       res.json(response)
     } catch (error) {
       console.log(error)
@@ -185,10 +204,10 @@ export class DataController {
    * @param {object} res - Express response object.
    * @param {Function} next - Express next middleware function.
    */
-  async update (req, res, next) {
+  async update(req, res, next) {
     const data = {
       user: req.body.user // check user?
-    // add catchID? contentType: req.body.contentType
+      // add catchID? contentType: req.body.contentType
     }
     const postData = await fetch(process.env.DATA_URL,
       {

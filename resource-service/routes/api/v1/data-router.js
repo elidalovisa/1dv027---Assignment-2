@@ -23,7 +23,7 @@ router.post('/', (req, res, next) => controller.addData(req, res, next))
 router.get('/:id', (req, res, next) => controller.find(req, res, next))
 
 // PUT data/:id
-router.put('/:id', (req, res, next) => controller.update(req, res, next))
+router.put('add-fish/:id', (req, res, next) => controller.update(req, res, next))
 
 // PATCH data/:id
 router.patch('/:id', (req, res, next) => controller.updatePartially(req, res, next))

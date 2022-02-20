@@ -9,7 +9,12 @@ import mongoose from 'mongoose'
 
 // Create a schema.
 const schema = new mongoose.Schema({
+  user: {
+    type: String,
+    default: false,
+    required: true
 
+  },
   fishType: {
     type: String,
     default: false
@@ -34,8 +39,8 @@ const schema = new mongoose.Schema({
     type: String,
     default: false
   },
-  imageURL: {
-    type: String,
+  links: {
+    type: Array,
     default: false
   }
 }, {
