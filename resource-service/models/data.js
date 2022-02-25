@@ -12,8 +12,7 @@ const schema = new mongoose.Schema({
   user: {
     type: String,
     default: false,
-    required: true
-
+    required: [true, 'User is required.']
   },
   fishType: {
     type: String,
@@ -76,11 +75,11 @@ schema.statics.getAll = async function () {
 /**
  * Gets fish catch by ID.
  *
- * @param {string} id - The value of the id for the catch to get.
+ * @param {string} username - The value of the id for the catch to get.
  * @returns {object} data.
  */
-schema.statics.getById = async function (id) {
-  return this.findOne({ _id: id })
+schema.statics.getById = async function (username) {
+  return this.findOne({ username: username })
 }
 
 /**

@@ -17,6 +17,34 @@ import fs from 'fs'
  */
 export class AccountController {
   /**
+ * Provide req.data to the route if :id is present.
+ *
+ * @param {object} req - Express request object.
+ * @param {object} res - Express response object.
+ * @param {Function} next - Express next middleware function.
+ * @param {string} username - The username of the user data to load.
+ */
+  async loadData (req, res, next, username) {
+    try {
+      // Get the data
+      const data = await User.getById(username)
+
+      // If no data found send a 404 (Not Found).
+      if (!data) {
+        next(createError(404))
+        return
+      }
+      // Provide the data to req.
+      req.data = data
+
+      // Next middleware.
+      next()
+    } catch (error) {
+      next(error)
+    }
+  }
+
+  /**
    * Authenticates a user.
    *
    * @param {object} req - Express request object.
@@ -24,6 +52,7 @@ export class AccountController {
    * @param {Function} next - Express next middleware function.
    */
   async login (req, res, next) {
+    console.log(req)
     try {
       const user = await User.authenticate(req.body.email, req.body.password)
       const payload = {
@@ -38,20 +67,11 @@ export class AccountController {
         algorithm: 'RS256',
         expiresIn: process.env.ACCESS_TOKEN_LIFE
       })
-
-      // // Create the refresh token with the longer lifespan.
-      // -----------------------------------------------------------------
-      // 👉👉👉 This is the place to create and handle the refresh token!
-      //         Quite a lot of additional implementation is required!!!
-      // -----------------------------------------------------------------
-      // const refreshToken = ...
-
       res
         .status(201)
         .json({
           access_token: accessToken
-          //  private_token: process.env.PERSONAL_ACCESS_TOKEN // Add personal token to headers?
-          // refresh_token: refreshToken
+          //private_token: process.env.PERSONAL_ACCESS_TOKEN // Add personal token to headers?
         })
     } catch (error) {
       // Authentication failed.
@@ -72,12 +92,18 @@ export class AccountController {
     try {
       const user = await User.insert({
         email: req.body.email,
+        username: req.body.username,
         password: req.body.password
       })
 
       res
         .status(200)
-        .json({ id: user.id })
+        .json({
+          id: user.id,
+          links: {
+            href: 'http://localhost:8085/login' + user.id
+          }
+        })
     } catch (error) {
       let err = error
 

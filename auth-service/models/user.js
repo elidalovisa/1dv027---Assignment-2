@@ -21,6 +21,12 @@ const schema = new mongoose.Schema({
     trim: true,
     validate: [isEmail, '{VALUE} is not an valid email address.']
   },
+  username: {
+    type: String,
+    unique: true,
+    required: [true, 'Username required.']
+
+  },
   password: {
     type: String,
     minlength: [10, 'The password must be of minimum length 10 characters.'],
@@ -74,13 +80,13 @@ schema.statics.authenticate = async function (email, password) {
 }
 
 /**
- * Gets a user by ID.
+ * Gets a user by username.
  *
- * @param {string} id - The value of the id for the user to get.
+ * @param {string} username - The value of the id for the user to get.
  * @returns {Promise<User>} The Promise to be fulfilled.
  */
-schema.statics.getById = async function (id) {
-  return this.findOne({ _id: id })
+schema.statics.getByUser = async function (username) {
+  return this.findOne({ username: username })
 }
 
 /**
@@ -99,3 +105,12 @@ schema.statics.insert = async function (userData) {
 
 // Create a model using the schema.
 export const User = mongoose.model('User', schema)
+
+/**
+ * Deletes data.
+ *
+ * @returns {object} data - ...
+ */
+schema.methods.delete = async function () {
+  return this.remove()
+}

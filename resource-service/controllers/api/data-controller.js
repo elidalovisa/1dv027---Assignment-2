@@ -21,10 +21,10 @@ export class DataController {
    * @param {Function} next - Express next middleware function.
    * @param {string} id - The value of the id for the image to load.
    */
-  async loadData(req, res, next, id) {
+  async loadData(req, res, next, username) {
     try {
       // Get the data
-      const data = await Data.getById(id)
+      const data = await Data.getById(username)
 
       // If no data found send a 404 (Not Found).
       if (!data) {
@@ -49,7 +49,27 @@ export class DataController {
    * @param {Function} next - Express next middleware function.
    */
   async find(req, res, next) {
-    res.json(req.data)
+    console.log(req.data)
+    const resData = {
+      user: req.data.user,
+      fishType: req.data.fishType,
+      position: req.data.position,
+      nameOfLocation: req.data.nameOfLocation,
+      city: req.data.city,
+      weight: req.data.weight,
+      length: req.data.length,
+      _id: req.data._id,
+      links: [{
+        rel: 'self',
+        href: process.env.BASE_URL
+      },
+      {
+        rel: 'addFish',
+        method: 'POST',
+        href: process.env.BASE_URL + 'api/v1/add-fish' + '/'
+      }]
+    }
+    res.json(resData)
   }
 
   /**
@@ -59,25 +79,29 @@ export class DataController {
    * @param {object} res - Express response object.
    * @param {Function} next - Express next middleware function.
    */
-  async addData (req, res, next) {
-    // todo: change data dependng on what type of API Im doing
-    const addFish = {
-      data: req.body.data,
-      contentType: req.body.contentType
+  async addFish (req, res, next) {
+    const fishToAdd = {
+      user: req.body.username,
+      fishType: req.body.fishType,
+      position: req.body.position,
+      nameOfLocation: req.body.nameOfLocation,
+      city: req.body.city,
+      weight: req.body.weight,
+      length: req.body.length
     }
     try {
       const postData = await fetch(process.env.DATA_URL,
         {
           method: 'POST',
           headers: {
-            'PRIVATE-TOKEN': process.env.PERSONAL_ACCESS_TOKEN,
+            'PRIVATE-TOKEN': req.headers.authorization,
             'Content-Type': 'application/json'
           },
-          body: JSON.stringify(addFish)
+          body: JSON.stringify(fishToAdd)
         })
       const response = await postData.json()
       const data = await Data.insert({
-        user: req.body.user,
+        user: req.body.username,
         fishType: req.body.fishType,
         position: req.body.position,
         nameOfLocation: req.body.nameOfLocation,
@@ -85,15 +109,6 @@ export class DataController {
         weight: req.body.weight,
         length: req.body.length,
         _id: response.id
-       /* links: [{
-          rel: 'self',
-          href: process.env.BASE_URL + response.id
-        },
-        {
-          rel: 'addFish',
-          method: 'POST',
-          href: process.env.BASE_URL + 'add-fish' + response.id
-        }]*/
       })
       const urls = [{
         rel: 'self',
@@ -130,7 +145,6 @@ export class DataController {
   async findAll(req, res, next) {
     try {
       // Get the data from Database.
-      console.log('hej')
       const fetchData = await fetch(process.env.DATA_URL,
         {
           method: 'GET',
@@ -140,8 +154,6 @@ export class DataController {
           }
         })
       const response = await fetchData.json()
-      console.log('hej1')
-
       console.log(response)
       res.json(response)
     } catch (error) {
@@ -157,7 +169,7 @@ export class DataController {
    * @param {object} res - Express response object.
    * @param {Function} next - Express next middleware function.
    */
-  async updatePartially (req, res, next) {
+  async updatePartially(req, res, next) {
     const catchId = req.params.id
     console.log(catchId)
     const postData = await fetch(process.env.DATA_URL + '/' + catchId,

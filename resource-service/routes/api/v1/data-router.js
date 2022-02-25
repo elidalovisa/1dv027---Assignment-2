@@ -11,16 +11,16 @@ export const router = express.Router()
 const controller = new DataController()
 
 // Provide req.data to the route if :id is present in the route path.
-router.param('id', (req, res, next, id) => controller.loadData(req, res, next, id))
+router.param('id', (req, res, next, username) => controller.loadData(req, res, next, username))
 
-// GET data
-router.get('/all', (req, res, next) => controller.findAll(req, res, next))
+// GET all fishes from all users.
+router.get('/users/fish', (req, res, next) => controller.findAll(req, res, next))
 
-// POST data
-router.post('/', (req, res, next) => controller.addData(req, res, next))
+// POST add fish
+router.post('/users/:id/fish', (req, res, next) => controller.addFish(req, res, next))
 
-// GET data/:id
-router.get('/:id', (req, res, next) => controller.find(req, res, next))
+// GET /:id all fish from on e user
+router.get('/users/:id/fish', (req, res, next) => controller.find(req, res, next))
 
 // PUT data/:id
 router.put('add-fish/:id', (req, res, next) => controller.update(req, res, next))
@@ -29,4 +29,4 @@ router.put('add-fish/:id', (req, res, next) => controller.update(req, res, next)
 router.patch('/:id', (req, res, next) => controller.updatePartially(req, res, next))
 
 // DELETE data/:id
-router.delete('/:id', (req, res, next) => controller.delete(req, res, next))
+router.delete('/users/:id/fish', (req, res, next) => controller.delete(req, res, next))
