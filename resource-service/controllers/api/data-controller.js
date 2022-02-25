@@ -19,12 +19,40 @@ export class DataController {
    * @param {object} req - Express request object.
    * @param {object} res - Express response object.
    * @param {Function} next - Express next middleware function.
-   * @param {string} id - The value of the id for the image to load.
+   * @param {string} username - The value of the user data to load.
    */
   async loadData(req, res, next, username) {
     try {
       // Get the data
-      const data = await Data.getById(username)
+      const data = await Data.getByUsername(username)
+
+      // If no data found send a 404 (Not Found).
+      if (!data) {
+        next(createError(404))
+        return
+      }
+      // Provide the data to req.
+      req.data = data
+
+      // Next middleware.
+      next()
+    } catch (error) {
+      next(error)
+    }
+  }
+
+/**
+ * Provide req.data to the route if :id is present.
+ *
+ * @param {object} req - Express request object.
+ * @param {object} res - Express response object.
+ * @param {Function} next - Express next middleware function.
+ * @param {string} id - The value of the user data to load.
+ */
+  async loadDataID(req, res, next, id) {
+    try {
+      // Get the data
+      const data = await Data.getById(id)
 
       // If no data found send a 404 (Not Found).
       if (!data) {
@@ -51,7 +79,39 @@ export class DataController {
   async find(req, res, next) {
     console.log(req.data)
     const resData = {
-      user: req.data.user,
+      user: req.data.username,
+      fishType: req.data.fishType,
+      position: req.data.position,
+      nameOfLocation: req.data.nameOfLocation,
+      city: req.data.city,
+      weight: req.data.weight,
+      length: req.data.length,
+      _id: req.data._id,
+      links: [{
+        rel: 'self',
+        href: process.env.BASE_URL
+      },
+      {
+        rel: 'addFish',
+        method: 'POST',
+        href: process.env.BASE_URL + 'api/v1/add-fish' + '/'
+      }]
+    }
+    res.json(resData)
+  }
+
+
+  /**
+   * Sends a JSON response containing requested data.
+   *
+   * @param {object} req - Express request object.
+   * @param {object} res - Express response object.
+   * @param {Function} next - Express next middleware function.
+   */
+  async findFish(req, res, next) {
+    console.log(req.data)
+    const resData = {
+      user: req.data.username,
       fishType: req.data.fishType,
       position: req.data.position,
       nameOfLocation: req.data.nameOfLocation,
@@ -80,8 +140,10 @@ export class DataController {
    * @param {Function} next - Express next middleware function.
    */
   async addFish (req, res, next) {
+    const username = req.params.id
+    console.log(username)
     const fishToAdd = {
-      user: req.body.username,
+      username: req.params.id,
       fishType: req.body.fishType,
       position: req.body.position,
       nameOfLocation: req.body.nameOfLocation,
@@ -101,7 +163,7 @@ export class DataController {
         })
       const response = await postData.json()
       const data = await Data.insert({
-        user: req.body.username,
+        username: req.params.id,
         fishType: req.body.fishType,
         position: req.body.position,
         nameOfLocation: req.body.nameOfLocation,
@@ -110,18 +172,22 @@ export class DataController {
         length: req.body.length,
         _id: response.id
       })
+      const location = new URL(
+        `${req.protocol}://${req.get('host')}${req.baseUrl}/users/${req.params.id}/fish/${data._id}`
+      )
+      console.log(location)
       const urls = [{
         rel: 'self',
-        href: process.env.BASE_URL + data._id
+        href: location
       },
       {
-        rel: 'addFish',
-        method: 'POST',
-        href: process.env.BASE_URL + 'api/v1/add-fish' + '/' + data._id
+        rel: 'remove Fish',
+        method: 'DELETE',
+        href: process.env.BASE_URL + 'users/' + username + '/fish/' + data._id
       }]
       data.links = urls
       res
-        // .location(location.href)
+        .location(location.href)
         .status(201)
         .json(data)
     } catch (error) {
