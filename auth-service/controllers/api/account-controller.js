@@ -5,45 +5,14 @@
  * @version 1.0.0
  */
 
-// import createError from 'http-errors'
 import jwt from 'jsonwebtoken'
 import createError from 'http-errors'
 import { User } from '../../models/user.js'
-import { fileURLToPath } from 'url'
-import fs from 'fs'
 
 /**
  * Encapsulates a controller.
  */
 export class AccountController {
-  /**
- * Provide req.data to the route if :id is present.
- *
- * @param {object} req - Express request object.
- * @param {object} res - Express response object.
- * @param {Function} next - Express next middleware function.
- * @param {string} username - The username of the user data to load.
- */
-  async loadData (req, res, next, username) {
-    try {
-      // Get the data
-      const data = await User.getById(username)
-
-      // If no data found send a 404 (Not Found).
-      if (!data) {
-        next(createError(404))
-        return
-      }
-      // Provide the data to req.
-      req.data = data
-
-      // Next middleware.
-      next()
-    } catch (error) {
-      next(error)
-    }
-  }
-
   /**
    * Authenticates a user.
    *
@@ -52,26 +21,23 @@ export class AccountController {
    * @param {Function} next - Express next middleware function.
    */
   async login (req, res, next) {
-    console.log(req)
     try {
       const user = await User.authenticate(req.body.email, req.body.password)
       const payload = {
-        sub: user.email,
-        x_permission_level: 15
+        username: user.username,
+        email: user.email,
+        permissionLevel: user.perissionLevel
       }
 
-      const privateKEY = fs.readFileSync('/Users/elida/private.pem', 'utf8')
-
       // Create the access token with the shorter lifespan.
-      const accessToken = jwt.sign(payload, privateKEY, {
-        algorithm: 'RS256',
+      const accessToken = jwt.sign(payload, process.env.PERSONAL_ACCESS_TOKEN, {
+        algorithm: 'HS256', //'RS256',
         expiresIn: process.env.ACCESS_TOKEN_LIFE
       })
       res
         .status(201)
         .json({
           access_token: accessToken
-          //private_token: process.env.PERSONAL_ACCESS_TOKEN // Add personal token to headers?
         })
     } catch (error) {
       // Authentication failed.
@@ -93,7 +59,8 @@ export class AccountController {
       const user = await User.insert({
         email: req.body.email,
         username: req.body.username,
-        password: req.body.password
+        password: req.body.password,
+        permissionLevel: 1 // change level
       })
 
       res

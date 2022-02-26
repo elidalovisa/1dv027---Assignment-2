@@ -41,14 +41,14 @@ export class DataController {
     }
   }
 
-/**
- * Provide req.data to the route if :id is present.
- *
- * @param {object} req - Express request object.
- * @param {object} res - Express response object.
- * @param {Function} next - Express next middleware function.
- * @param {string} id - The value of the user data to load.
- */
+  /**
+   * Provide req.data to the route if :id is present.
+   *
+   * @param {object} req - Express request object.
+   * @param {object} res - Express response object.
+   * @param {Function} next - Express next middleware function.
+   * @param {string} id - The value of the user data to load.
+   */
   async loadDataID(req, res, next, id) {
     try {
       // Get the data
@@ -100,7 +100,6 @@ export class DataController {
     res.json(resData)
   }
 
-
   /**
    * Sends a JSON response containing requested data.
    *
@@ -109,24 +108,18 @@ export class DataController {
    * @param {Function} next - Express next middleware function.
    */
   async findFish(req, res, next) {
-    console.log(req.data)
+    const fish = await Data.getById(req.params.id)
     const resData = {
-      user: req.data.username,
-      fishType: req.data.fishType,
-      position: req.data.position,
-      nameOfLocation: req.data.nameOfLocation,
-      city: req.data.city,
-      weight: req.data.weight,
-      length: req.data.length,
-      _id: req.data._id,
+      fish,
       links: [{
         rel: 'self',
-        href: process.env.BASE_URL
+        href: `${req.protocol}://${req.get('host')}${req.baseUrl}/users/${fish.username}/fish/${req.params.id}`
+
       },
       {
-        rel: 'addFish',
-        method: 'POST',
-        href: process.env.BASE_URL + 'api/v1/add-fish' + '/'
+        rel: 'remove',
+        method: 'DELETE',
+        href: `${req.protocol}://${req.get('host')}${req.baseUrl}/users/${fish.username}/fish/${req.params.id}`
       }]
     }
     res.json(resData)
@@ -139,7 +132,7 @@ export class DataController {
    * @param {object} res - Express response object.
    * @param {Function} next - Express next middleware function.
    */
-  async addFish (req, res, next) {
+  async addFish(req, res, next) {
     const username = req.params.id
     console.log(username)
     const fishToAdd = {
@@ -163,7 +156,7 @@ export class DataController {
         })
       const response = await postData.json()
       const data = await Data.insert({
-        username: req.params.id,
+        username: username,
         fishType: req.body.fishType,
         position: req.body.position,
         nameOfLocation: req.body.nameOfLocation,
@@ -175,7 +168,6 @@ export class DataController {
       const location = new URL(
         `${req.protocol}://${req.get('host')}${req.baseUrl}/users/${req.params.id}/fish/${data._id}`
       )
-      console.log(location)
       const urls = [{
         rel: 'self',
         href: location
@@ -210,18 +202,9 @@ export class DataController {
    */
   async findAll(req, res, next) {
     try {
-      // Get the data from Database.
-      const fetchData = await fetch(process.env.DATA_URL,
-        {
-          method: 'GET',
-          headers: {
-            'PRIVATE-TOKEN': process.env.PERSONAL_ACCESS_TOKEN,
-            'Content-Type': 'application/json'
-          }
-        })
-      const response = await fetchData.json()
-      console.log(response)
-      res.json(response)
+      const allFishes = await Data.getAll()
+      //console.log(allFishes)
+      res.json(allFishes)
     } catch (error) {
       console.log(error)
       next(error)
@@ -242,7 +225,7 @@ export class DataController {
       {
         method: 'POST',
         headers: {
-          'PRIVATE-TOKEN': process.env.PERSONAL_ACCESS_TOKEN,
+          'PRIVATE-TOKEN': req.headers.authorization,
           'Content-Type': 'application/json'
         }
       })
@@ -321,6 +304,35 @@ export class DataController {
         err.innerException = error
       }
       next(err)
+    }
+  }
+
+  /**
+   * Deletes the specified fish
+   *
+   * @param {object} req - Express request object.
+   * @param {object} res - Express response object.
+   * @param {Function} next - Express next middleware function.
+   */
+  async delete(req, res, next) {
+    const fishToDelete = await fetch('http://localhost:8081/api/v1/users/elsa/fish/621966e15e6a51efad2c4cf3',
+      {
+        method: 'DELETE',
+        headers: {
+          'PRIVATE-TOKEN': req.headers.authorization,
+          'Content-Type': 'application/json'
+        }
+      })
+    const response = await fishToDelete.json()
+    console.log(response)
+    try {
+      await req.data.delete()
+
+      res
+        .status(204)
+        .end()
+    } catch (error) {
+      next(error)
     }
   }
 }

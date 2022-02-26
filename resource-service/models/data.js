@@ -59,6 +59,9 @@ const schema = new mongoose.Schema({
 })
 
 schema.virtual('id').get(function () {
+  if (this._id === undefined) {
+    return
+  }
   return this._id.toHexString()
 })
 
