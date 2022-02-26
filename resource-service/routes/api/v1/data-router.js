@@ -9,7 +9,6 @@ import express from 'express'
 import createError from 'http-errors'
 import { DataController } from '../../../controllers/api/data-controller.js'
 import jwt from 'jsonwebtoken'
-import fs from 'fs'
 export const router = express.Router()
 const controller = new DataController()
 
@@ -48,7 +47,7 @@ const authenticateJWT = (req, res, next) => {
     })
     req.user = {
       username: payload.username,
-      email: payload.sub,
+      email: payload.email,
       permissionLevel: payload.permissionLevel
     }
     next()
@@ -70,7 +69,6 @@ const authenticateJWT = (req, res, next) => {
  * @param {number} permissionLevel - ...
  */
 const hasPermission = (req, res, next, permissionLevel) => {
-  console.log(req.user)
   req.user?.permissionLevel & permissionLevel ? next() : next(createError(403))
 }
 
@@ -82,7 +80,7 @@ const hasPermission = (req, res, next, permissionLevel) => {
 router.param('username', (req, res, next, username) => controller.loadData(req, res, next, username))
 
 // Provide req.data to the route if :id is present in the route path.
-//router.param('id', (req, res, next, id) => controller.loadDataID(req, res, next, id))
+router.param('id', (req, res, next, id) => controller.loadDataID(req, res, next, id))
 
 // GET all fishes from all users.
 router.get('/users/fish',
@@ -93,9 +91,11 @@ router.get('/users/fish',
 
 //router.get('/users/fish', (req, res, next) => controller.findAll(req, res, next))
 
-// POST add fish
-
-router.post('/users/:username/fish', (req, res, next) => controller.addFish(req, res, next))
+// POST add a fish for one user
+router.post('/users/:username/fish',
+  authenticateJWT,
+  (req, res, next) => hasPermission(req, res, next, PermissionLevels.DELETE),
+  (req, res, next) => controller.addFish(req, res, next))
 
 // GET /:id all fish from one user
 //router.get('/users/:username/fish', (req, res, next) => controller.find(req, res, next))

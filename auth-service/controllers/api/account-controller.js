@@ -24,7 +24,7 @@ export class AccountController {
     try {
       const user = await User.authenticate(req.body.email, req.body.password)
       const payload = {
-        username: req.body.username,
+        username: user.username,
         email: user.email,
         permissionLevel: user.permissionLevel
       }

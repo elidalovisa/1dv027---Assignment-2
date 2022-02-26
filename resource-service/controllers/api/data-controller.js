@@ -22,10 +22,37 @@ export class DataController {
    * @param {Function} next - Express next middleware function.
    * @param {string} username - The value of the user data to load.
    */
-  async loadData (req, res, next, username) {
+  async loadData(req, res, next, username) {
     try {
       // Get the data
       const data = await User.getByUser(username)
+      // If no data found send a 404 (Not Found).
+      if (!data) {
+        next(createError(404))
+        return
+      }
+      // Provide the data to req.
+      req.data = data
+
+      // Next middleware.
+      next()
+    } catch (error) {
+      next(error)
+    }
+  }
+
+  /**
+   * Provide req.data to the route if :id is present.
+   *
+   * @param {object} req - Express request object.
+   * @param {object} res - Express response object.
+   * @param {Function} next - Express next middleware function.
+   * @param {string} id - The value of the user data to load.
+   */
+  async loadDataID(req, res, next, id) {
+    try {
+      // Get the data
+      const data = await Data.getByID(id)
       // If no data found send a 404 (Not Found).
       if (!data) {
         next(createError(404))
@@ -105,6 +132,10 @@ export class DataController {
    * @param {Function} next - Express next middleware function.
    */
   async addFish(req, res, next) {
+    if (req.user.username !== req.params.username) {
+      res.json('You are not allowed to add fish for an other member')
+    }
+
     const username = req.params.username
     const fishToAdd = {
       username: req.params.username,
