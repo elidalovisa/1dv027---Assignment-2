@@ -7,6 +7,7 @@
 
 import createError from 'http-errors'
 import { Data } from '../../models/data.js'
+import { User } from '../../../auth-service/models/user.js'
 import fetch from 'node-fetch'
 
 /**
@@ -14,46 +15,17 @@ import fetch from 'node-fetch'
  */
 export class DataController {
   /**
-   * Provide req.data to the route if :id is present.
+   * Provide req.data to the route if :username is present.
    *
    * @param {object} req - Express request object.
    * @param {object} res - Express response object.
    * @param {Function} next - Express next middleware function.
    * @param {string} username - The value of the user data to load.
    */
-  async loadData(req, res, next, username) {
+  async loadData (req, res, next, username) {
     try {
       // Get the data
-      const data = await Data.getByUsername(username)
-
-      // If no data found send a 404 (Not Found).
-      if (!data) {
-        next(createError(404))
-        return
-      }
-      // Provide the data to req.
-      req.data = data
-
-      // Next middleware.
-      next()
-    } catch (error) {
-      next(error)
-    }
-  }
-
-  /**
-   * Provide req.data to the route if :id is present.
-   *
-   * @param {object} req - Express request object.
-   * @param {object} res - Express response object.
-   * @param {Function} next - Express next middleware function.
-   * @param {string} id - The value of the user data to load.
-   */
-  async loadDataID(req, res, next, id) {
-    try {
-      // Get the data
-      const data = await Data.getById(id)
-
+      const data = await User.getByUser(username)
       // If no data found send a 404 (Not Found).
       if (!data) {
         next(createError(404))
@@ -133,10 +105,9 @@ export class DataController {
    * @param {Function} next - Express next middleware function.
    */
   async addFish(req, res, next) {
-    const username = req.params.id
-    console.log(username)
+    const username = req.params.username
     const fishToAdd = {
-      username: req.params.id,
+      username: req.params.username,
       fishType: req.body.fishType,
       position: req.body.position,
       nameOfLocation: req.body.nameOfLocation,
@@ -149,7 +120,7 @@ export class DataController {
         {
           method: 'POST',
           headers: {
-            'PRIVATE-TOKEN': req.headers.authorization,
+            'PRIVATE-TOKEN': process.env.PERSONAL_ACCESS_TOKEN,
             'Content-Type': 'application/json'
           },
           body: JSON.stringify(fishToAdd)

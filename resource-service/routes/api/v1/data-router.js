@@ -44,9 +44,8 @@ const authenticateJWT = (req, res, next) => {
 
   try {
     const payload = jwt.verify(authorization[1], process.env.PERSONAL_ACCESS_TOKEN, {
-      algorithm: 'RS256'
+      algorithm: 'HS256' // 'RS256'
     })
-    console.log(payload)
     req.user = {
       username: payload.username,
       email: payload.sub,
@@ -71,6 +70,7 @@ const authenticateJWT = (req, res, next) => {
  * @param {number} permissionLevel - ...
  */
 const hasPermission = (req, res, next, permissionLevel) => {
+  console.log(req.user)
   req.user?.permissionLevel & permissionLevel ? next() : next(createError(403))
 }
 
@@ -85,23 +85,23 @@ router.param('username', (req, res, next, username) => controller.loadData(req, 
 //router.param('id', (req, res, next, id) => controller.loadDataID(req, res, next, id))
 
 // GET all fishes from all users.
+router.get('/users/fish',
+  authenticateJWT,
+  (req, res, next) => hasPermission(req, res, next, PermissionLevels.READ),
+  (req, res, next) => controller.findAll(req, res, next)
+)
 
-// GET
-/*router.get('/users/fish',
- /* authenticateJWT,
-  (req, res, next) => hasPermission(req, res, next, PermissionLevels.READ),*/
- // (req, res, next) => controller.findAll(req, res, next)
-//)
-router.get('/users/fish', (req, res, next) => controller.findAll(req, res, next))
+//router.get('/users/fish', (req, res, next) => controller.findAll(req, res, next))
 
 // POST add fish
-router.post('/users/:id/fish', (req, res, next) => controller.addFish(req, res, next))
+
+router.post('/users/:username/fish', (req, res, next) => controller.addFish(req, res, next))
 
 // GET /:id all fish from one user
-router.get('/users/:username/fish', (req, res, next) => controller.find(req, res, next))
+//router.get('/users/:username/fish', (req, res, next) => controller.find(req, res, next))
 
 // GET /:id specific fish from one user
-router.get('/users/:username/fish/:id', (req, res, next) => controller.findFish(req, res, next))
+//router.get('/users/:username/fish/:id', (req, res, next) => controller.findFish(req, res, next))
 
 // PUT data/:id
 router.put('add-fish/:id', (req, res, next) => controller.update(req, res, next))
@@ -110,4 +110,8 @@ router.put('add-fish/:id', (req, res, next) => controller.update(req, res, next)
 router.patch('/:id', (req, res, next) => controller.updatePartially(req, res, next))
 
 // DELETE data/:id
-router.delete('/users/:username/fish/:id', (req, res, next) => controller.delete(req, res, next))
+router.delete('/users/:username/fish/:id',
+  authenticateJWT,
+  (req, res, next) => hasPermission(req, res, next, PermissionLevels.DELETE),
+  (req, res, next) => controller.delete(req, res, next)
+)

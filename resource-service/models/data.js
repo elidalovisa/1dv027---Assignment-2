@@ -75,27 +75,17 @@ schema.statics.getAll = async function () {
 }
 
 /**
- * Get user by username
+ * Gets fish catch by ID.
  *
- * @param {string} username - The value of the user.
+ * @param {string} username - The value of the id for the catch to get.
  * @returns {object} data.
  */
-schema.statics.getByUsername = async function (username) {
+schema.statics.getById = async function (username) {
   return this.findOne({ username: username })
 }
 
 /**
- * Get user by ID.
- *
- * @param {string} id - The value of the user.
- * @returns {object} data.
- */
-schema.statics.getById = async function (id) {
-  return this.findOne({ _id: id })
-}
-
-/**
- * Inserts a neew fish catch.
+ * Inserts a new fish catch.
  *
  * @param {object} data - ...
  * @param {string} data.description - ...

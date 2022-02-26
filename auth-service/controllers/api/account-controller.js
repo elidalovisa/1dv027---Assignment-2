@@ -24,9 +24,9 @@ export class AccountController {
     try {
       const user = await User.authenticate(req.body.email, req.body.password)
       const payload = {
-        username: user.username,
+        username: req.body.username,
         email: user.email,
-        permissionLevel: user.perissionLevel
+        permissionLevel: user.permissionLevel
       }
 
       // Create the access token with the shorter lifespan.
@@ -60,12 +60,13 @@ export class AccountController {
         email: req.body.email,
         username: req.body.username,
         password: req.body.password,
-        permissionLevel: 1 // change level
+        permissionLevel: 8 // change level
       })
 
       res
         .status(200)
         .json({
+          username: user.username,
           id: user.id,
           links: {
             href: 'http://localhost:8085/login' + user.id
