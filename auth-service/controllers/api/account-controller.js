@@ -33,7 +33,14 @@ export class AccountController {
         algorithm: 'HS256', // 'RS256',
         expiresIn: process.env.ACCESS_TOKEN_LIFE
       })
-         const urls = [{   
+         const urls = [
+        {
+        rel: 'self',
+        method: 'POST',
+        href: `${req.protocol}://${req.get('host')}${req.baseUrl}/users/login`,
+        description: 'Login user. Email and password in body as JSON.'
+      },
+      {   
         method: 'GET',
         href: `${req.protocol}://${req.get('host')}${req.baseUrl}`,
         description: 'API entry point.'
@@ -89,10 +96,11 @@ export class AccountController {
   async getUsers(req, res, next) {
     try {
       const users = await User.getAll()
-       const urls = [{   
+       const urls = [{
+        rel: 'self',
         method: 'GET',
-        href: `${req.protocol}://${req.get('host')}${req.baseUrl}`,
-        description: 'API entry point.'
+        href: `${req.protocol}://${req.get('host')}${req.baseUrl}/users`,
+        description: 'Show all users.'
       },
          {
         method: 'POST',
@@ -133,16 +141,22 @@ export class AccountController {
         password: req.body.password,
         permissionLevel: 8 // change level
       })
-        const urls = [{   
-        method: 'GET',
-        href: `${req.protocol}://${req.get('host')}${req.baseUrl}`,
-        description: 'API entry point.'
+        const urls = [{
+        rel: 'self',
+        method: 'POST',
+        href: `${req.protocol}://${req.get('host')}${req.baseUrl}/users/register`,
+        description: 'Register new user. Email, username and password in body as JSON'
       },
         {
         method: 'POST',
         href: `${req.protocol}://${req.get('host')}${req.baseUrl}/users/login`,
         description: 'Login user. Email and password in body as JSON.'
-      }]
+      },
+      {
+        method: 'GET',
+        href: `${req.protocol}://${req.get('host')}${req.baseUrl}/users`,
+        description: 'Show all users.'
+        }]
       res
         .header('Cache-control', 'max-age=5')
         .status(200)

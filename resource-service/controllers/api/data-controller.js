@@ -67,6 +67,11 @@ export class DataController {
         href: `${req.protocol}://${req.get('host')}${req.baseUrl}/users/login`,
         description: 'Login user. Email and password in body as JSON.'
       },
+        {
+        method: 'GET',
+        href: `${req.protocol}://${req.get('host')}${req.baseUrl}/users`,
+        description: 'Show all users.'
+      },
       {
         method: 'GET',
         href: `${req.protocol}://${req.get('host')}${req.baseUrl}/users/catches/all`,
@@ -84,12 +89,12 @@ export class DataController {
       },
       {
         method: 'PUT',
-        href: `${req.protocol}://${req.get('host')}${req.baseUrl}/users/catches/` + ' + id',
+        href: `${req.protocol}://${req.get('host')}${req.baseUrl}/users/catches/:id`,
         description: 'Change data about catch. Catch ID in parameter. Data in body as JSON.'
       },
        {
         method: 'DELETE',
-        href: `${req.protocol}://${req.get('host')}${req.baseUrl}/users/catches/` + ' + id',
+        href: `${req.protocol}://${req.get('host')}${req.baseUrl}/users/catches/:id`,
         description: 'Remove catch from catches. Catch ID in parameter.'
       }]
       res
@@ -129,12 +134,12 @@ export class DataController {
       },
       {
         method: 'DELETE',
-        href: `${req.protocol}://${req.get('host')}${req.baseUrl}/users/catches/` + ' + id',
+        href: `${req.protocol}://${req.get('host')}${req.baseUrl}/users/catches/:id`,
         description: 'Remove catch from catches'
 
       }, {
         method: 'PUT',
-        href: `${req.protocol}://${req.get('host')}${req.baseUrl}/users/catches/` + ' + id',
+        href: `${req.protocol}://${req.get('host')}${req.baseUrl}/users/catches/:id`,
         description: 'Change data about catch. Add data in body.'
 
       },
@@ -245,12 +250,12 @@ export class DataController {
       },
       {
         method: 'DELETE',
-        href: `${req.protocol}://${req.get('host')}${req.baseUrl}/users/catches/` + ' + id',
+        href: `${req.protocol}://${req.get('host')}${req.baseUrl}/users/catches/:id`,
         description: 'Remove catch from catches'
 
       }, {
         method: 'PUT',
-        href: `${req.protocol}://${req.get('host')}${req.baseUrl}/users/catches/` + ' + id',
+        href: `${req.protocol}://${req.get('host')}${req.baseUrl}/users/catches/:id`,
         description: 'Change data about catch. Add data in body.'
 
       },
@@ -320,6 +325,73 @@ export class DataController {
           data: userData,
           links: urls
         })
+   } 
+
+
+  /**
+   * Gets data requested in the parameters.
+   *
+   * @param {object} req - Express request object.
+   * @param {object} res - Express response object.
+   * @param {Function} next - Express next middleware function.
+   */
+   async getParam (req, res, next) {
+try {
+   const weight = req.query.weight
+    const length = req.query.length
+    const test = await Data.find({})
+    const result = test.filter(w => w.weight > weight && w.length > length)
+      const urls = [{
+        rel: 'self',
+        method: 'GET',
+        href: `${req.protocol}://${req.get('host')}${req.baseUrl}/users/catches/fish/details`,
+        description: 'Show all catches that match the requested in parameters (minimum weight and length).'
+      },
+      {
+        method: 'GET',
+        href: `${req.protocol}://${req.get('host')}${req.baseUrl}/users/catches/:id`,
+        description: 'Show data about catch.'
+      },
+      {
+        method: 'DELETE',
+        href: `${req.protocol}://${req.get('host')}${req.baseUrl}/users/catches/:id`,
+        description: 'Remove catch from catches'
+
+      }, {
+        method: 'PUT',
+        href: `${req.protocol}://${req.get('host')}${req.baseUrl}/users/catches/:id`,
+        description: 'Change data about catch. Add data in body.'
+
+      },
+      {
+        method: 'POST',
+        href: `${req.protocol}://${req.get('host')}${req.baseUrl}/users/catches`,
+        description: 'Add new catch to catches.'
+      },
+         {
+        method: 'GET',
+        href: `${req.protocol}://${req.get('host')}${req.baseUrl}/users/catches/all`,
+        description: 'Show all catches from all users.'
+      }]
+      res
+        .header('Cache-control', 'max-age=5')
+        .status(200)
+        .json({
+           message: 'Data fetched.',
+           data: result,
+           links: urls
+        })
+        .end()
+  } catch (error) {
+      let err = error
+      console.log(err)
+      if (error.name === 'ValidationError') {
+        // Validation error(s).
+        err = createError(400)
+        err.innerException = error
+      }
+      next(err)
+    }
    } 
 
   /**
@@ -398,18 +470,24 @@ export class DataController {
     try {
       await req.data.delete()
         const urls = [{
+        rel: 'self',
+        method: 'DELETE',
+        href: `${req.protocol}://${req.get('host')}${req.baseUrl}/users/catches/${req.params.id}`,
+        description: 'Remove catch from catches'
+
+      }, {
         method: 'GET',
         href: `${req.protocol}://${req.get('host')}${req.baseUrl}/users/catches`,
         description: 'Show all catches from logged in user.'
       },
       {
         method: 'DELETE',
-        href: `${req.protocol}://${req.get('host')}${req.baseUrl}/users/catches/` + ' + id',
+        href: `${req.protocol}://${req.get('host')}${req.baseUrl}/users/catches/:id`,
         description: 'Remove catch from catches'
 
       }, {
         method: 'PUT',
-        href: `${req.protocol}://${req.get('host')}${req.baseUrl}/users/catches/` + ' + id',
+        href: `${req.protocol}://${req.get('host')}${req.baseUrl}/users/catches/:id`,
         description: 'Change data about catch. Add data in body.'
       },
       {
