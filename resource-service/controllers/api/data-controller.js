@@ -41,33 +41,58 @@ export class DataController {
     }
   }
 
+  
+
   /**
-   * Provide req.data to the route if :id is present.
+   * Gets collection from all registred users,
+   * Sends a JSON response containing all data.
    *
    * @param {object} req - Express request object.
    * @param {object} res - Express response object.
    * @param {Function} next - Express next middleware function.
-   * @param {string} id - The value of the user data to load.
    */
-  /* async loadDataID(req, res, next, id) {
-     try {
-       // Get the data
-       const data = await Data.getById(id)
-       // If no data found send a 404 (Not Found).
-       if (!data) {
-         next(createError(404))
-         return
-       }
-       // Provide the id to req.
-       req.data._id = data._id
-       console.log(req.data)
- 
-       // Next middleware.
-     } catch (error) {
-       next(error)
-     }
-     return id
-   }*/
+  async getAll(req, res, next) {
+    try {
+      const allCollection = await Data.getAll()
+       const urls = [{
+        rel: 'self',
+        method: 'GET',
+        href: `${req.protocol}://${req.get('host')}${req.baseUrl}/users/collection/all`,
+        description: 'Show all catches from all users.'
+      },
+       {
+        method: 'GET',
+        href: `${req.protocol}://${req.get('host')}${req.baseUrl}/users/collection`,
+        description: 'Show all catches from logged in user.'
+      },
+      {
+        method: 'DELETE',
+        href: `${req.protocol}://${req.get('host')}${req.baseUrl}/users/collection/` + ' + id',
+        description: 'Remove catch from collection'
+
+      }, {
+        method: 'PATCH/PUT?',
+        href: `${req.protocol}://${req.get('host')}${req.baseUrl}/users/collection/` + ' + id',
+        description: 'Change data about catch'
+
+      },
+      {
+        method: 'POST',
+        href: `${req.protocol}://${req.get('host')}${req.baseUrl}/users/collection`,
+        description: 'Add new catch to collection.'
+      }]
+      res
+        .status(200)
+        .json({
+          message: 'Data fetched.',
+          data: allCollection,
+          links: urls
+        })
+    } catch (error) {
+      console.log(error)
+      next(error)
+    }
+  }
 
   /**
    * Add a new catch for logged in user.
@@ -103,12 +128,11 @@ export class DataController {
         method: 'PATCH/PUT?',
         href: `${req.protocol}://${req.get('host')}${req.baseUrl}/users/collection/${data.id}`,
         description: 'Change data about catch'
-
       },
       {
         method: 'GET',
         href: `${req.protocol}://${req.get('host')}${req.baseUrl}/users/collection`,
-        description: 'Show all catches from user.'
+        description: 'Show all catches from logged in user.'
       },
       {
         method: 'POST',
@@ -153,7 +177,7 @@ export class DataController {
         rel: 'self',
         method: 'GET',
         href: `${req.protocol}://${req.get('host')}${req.baseUrl}/users/collection`,
-        description: 'Show all catches from user.'
+        description: 'Show all catches from logged in user.'
       },
       {
         method: 'DELETE',
@@ -259,25 +283,6 @@ export class DataController {
       }]
     }
     res.json(resData)
-  }
-
-
-  /**
-   * Sends a JSON response containing all data.
-   *
-   * @param {object} req - Express request object.
-   * @param {object} res - Express response object.
-   * @param {Function} next - Express next middleware function.
-   */
-  async findAll(req, res, next) {
-    try {
-      const allFishes = await Data.getAll()
-      //console.log(allFishes)
-      res.json(allFishes)
-    } catch (error) {
-      console.log(error)
-      next(error)
-    }
   }
 
   /**

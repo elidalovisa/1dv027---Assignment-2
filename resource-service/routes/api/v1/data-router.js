@@ -85,8 +85,8 @@ router.param('id', (req, res, next, id) => controller.loadData(req, res, next, i
 // GET all fishes from all users.
 router.get('/users/collection/all',
   authenticateJWT,
-  (req, res, next) => hasPermission(req, res, next, PermissionLevels.READ),
-  (req, res, next) => controller.findAll(req, res, next)
+  (req, res, next) => hasPermission(req, res, next, PermissionLevels.DELETE),
+  (req, res, next) => controller.getAll(req, res, next)
 )
 
 //router.get('/users/fish', (req, res, next) => controller.findAll(req, res, next))
