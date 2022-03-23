@@ -70,7 +70,7 @@ export class DataController {
    }*/
 
   /**
-   * Add a new catch for user.
+   * Add a new catch for logged in user.
    *
    * @param {object} req - Express request object.
    * @param {object} res - Express response object.
@@ -140,6 +140,7 @@ export class DataController {
   }
 
   /**
+   * Gets all catches from the logged in user.
    * Sends a JSON response containing requested data.
    *
    * @param {object} req - Express request object.
@@ -191,6 +192,51 @@ export class DataController {
    * @param {object} res - Express response object.
    * @param {Function} next - Express next middleware function.
    */
+   async getCatch (req, res, next) {
+    const userData = await Data.getById(req.params.id)
+    const urls = [{
+        rel: 'self',
+        method: 'GET',
+        href: `${req.protocol}://${req.get('host')}${req.baseUrl}/users/collection/${req.params.id}`,
+        description: 'Show data about catch.'
+      },
+      {
+        method: 'DELETE',
+        href: `${req.protocol}://${req.get('host')}${req.baseUrl}/users/collection/${req.params.id}`,
+        description: 'Remove catch from collection'
+
+      }, {
+        method: 'PATCH/PUT?',
+        href: `${req.protocol}://${req.get('host')}${req.baseUrl}/users/collection/${req.params.id}`,
+        description: 'Change data about catch'
+
+      },
+      {
+        method: 'POST',
+        href: `${req.protocol}://${req.get('host')}${req.baseUrl}/users/collection`,
+        description: 'Add new catch to collection.'
+      },
+         {
+        method: 'GET',
+        href: `${req.protocol}://${req.get('host')}${req.baseUrl}/users/collection/all`,
+        description: 'Show all catches from all users.'
+      }]
+      res
+        .status(200)
+        .json({
+          message: 'Data fetched.',
+          data: userData,
+          links: urls
+        })
+   } 
+
+  /**
+   * Sends a JSON response containing requested data.
+   *
+   * @param {object} req - Express request object.
+   * @param {object} res - Express response object.
+   * @param {Function} next - Express next middleware function.
+   */
   async find(req, res, next) {
     console.log(req.data)
     const resData = {
@@ -214,21 +260,6 @@ export class DataController {
     }
     res.json(resData)
   }
-
-
-
-  /**
-   * Sends a JSON response containing requested data.
-   *
-   * @param {object} req - Express request object.
-   * @param {object} res - Express response object.
-   * @param {Function} next - Express next middleware function.
-   */
-  /* async findFishByID (req, res, next) {
-     // Needs work does not go in to this function. Req id works.
-     const userData = await Data.getById(req.body.id)
-     res.json(userData)
-   } */
 
 
   /**
