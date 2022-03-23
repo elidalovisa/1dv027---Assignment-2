@@ -36,10 +36,6 @@ const schema = new mongoose.Schema({
   length: {
     type: String,
     default: false
-  },
-  links: {
-    type: Array,
-    default: false
   }
 }, {
   timestamps: true,
@@ -85,6 +81,16 @@ schema.statics.getById = async function (id) {
 }
 
 /**
+ * Gets all fish catch by username.
+ *
+ * @param {string} username - The value of the id for the catch to get.
+ * @returns {object} data.
+ */
+schema.statics.getByUser = async function (username) {
+  return this.find({ username: username })
+}
+
+/**
  * Inserts a new fish catch.
  *
  * @param {object} data - ...
@@ -109,7 +115,6 @@ schema.methods.update = async function (data) {
   if (data.fishType?.localeCompare(this.fishType) !== 0) {
     this.fishType = data.fishType
   }
-
   if (data.position?.localeCompare(this.data) !== 0) {
     this.position = data.position
   }

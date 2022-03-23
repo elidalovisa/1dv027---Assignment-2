@@ -80,7 +80,7 @@ const hasPermission = (req, res, next, permissionLevel) => {
 router.param('username', (req, res, next, username) => controller.loadData(req, res, next, username))
 
 // Provide req.data to the route if :id is present in the route path.
-router.param('id', (req, res, next, id) => controller.loadDataID(req, res, next, id))
+router.param('id', (req, res, next, id, username) => controller.loadDataID(req, res, next, id, username))
 
 // GET all fishes from all users.
 router.get('/users/fish',
@@ -91,17 +91,20 @@ router.get('/users/fish',
 
 //router.get('/users/fish', (req, res, next) => controller.findAll(req, res, next))
 
-// POST add a fish for one user
-router.post('/users/:username/fish',
+// POST add a catch for one user
+router.post('/users/collection',
   authenticateJWT,
   (req, res, next) => hasPermission(req, res, next, PermissionLevels.DELETE),
-  (req, res, next) => controller.addFish(req, res, next))
+  (req, res, next) => controller.addCatch(req, res, next))
+
+// GET /:username all fish from one user
+router.get('/users/:username/collection', (req, res, next) => controller.getFishCollection(req, res, next))
 
 // GET /:id all fish from one user
-//router.get('/users/:username/fish', (req, res, next) => controller.find(req, res, next))
+router.get('/users/:username/collection/fish_type', (req, res, next) => controller.find(req, res, next))
 
-// GET /:id specific fish from one user
-//router.get('/users/:username/fish/:id', (req, res, next) => controller.findFish(req, res, next))
+// GET /:id specific fish from one user (fish ID in body)
+router.get('/users/:username/collection/fish', (req, res, next) => controller.findFishByID(req, res, next))
 
 // PUT data/:id
 router.put('add-fish/:id', (req, res, next) => controller.update(req, res, next))
@@ -110,7 +113,7 @@ router.put('add-fish/:id', (req, res, next) => controller.update(req, res, next)
 router.patch('/:id', (req, res, next) => controller.updatePartially(req, res, next))
 
 // DELETE data/:id
-router.delete('/users/:username/fish/:id',
+router.delete('/users/:username/collection/:id',
   authenticateJWT,
   (req, res, next) => hasPermission(req, res, next, PermissionLevels.DELETE),
   (req, res, next) => controller.delete(req, res, next)

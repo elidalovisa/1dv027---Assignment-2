@@ -49,24 +49,25 @@ export class DataController {
    * @param {Function} next - Express next middleware function.
    * @param {string} id - The value of the user data to load.
    */
-  async loadDataID(req, res, next, id) {
-    try {
-      // Get the data
-      const data = await Data.getByID(id)
-      // If no data found send a 404 (Not Found).
-      if (!data) {
-        next(createError(404))
-        return
-      }
-      // Provide the data to req.
-      req.data = data
-
-      // Next middleware.
-      next()
-    } catch (error) {
-      next(error)
-    }
-  }
+  /* async loadDataID(req, res, next, id) {
+     try {
+       // Get the data
+       const data = await Data.getById(id)
+       // If no data found send a 404 (Not Found).
+       if (!data) {
+         next(createError(404))
+         return
+       }
+       // Provide the id to req.
+       req.data._id = data._id
+       console.log(req.data)
+ 
+       // Next middleware.
+     } catch (error) {
+       next(error)
+     }
+     return id
+   }*/
 
   /**
    * Sends a JSON response containing requested data.
@@ -106,57 +107,34 @@ export class DataController {
    * @param {object} res - Express response object.
    * @param {Function} next - Express next middleware function.
    */
-  async findFish(req, res, next) {
-    const fish = await Data.getById(req.params.id)
-    const resData = {
-      fish,
-      links: [{
-        rel: 'self',
-        href: `${req.protocol}://${req.get('host')}${req.baseUrl}/users/${fish.username}/fish/${req.params.id}`
-
-      },
-      {
-        rel: 'remove',
-        method: 'DELETE',
-        href: `${req.protocol}://${req.get('host')}${req.baseUrl}/users/${fish.username}/fish/${req.params.id}`
-      }]
-    }
-    res.json(resData)
+  async getCollection(req, res, next) {
+    const userData = await Data.getByUser(req.params.username)
+    res.json(userData)
   }
 
   /**
-   * Add new data.
+   * Sends a JSON response containing requested data.
    *
    * @param {object} req - Express request object.
    * @param {object} res - Express response object.
    * @param {Function} next - Express next middleware function.
    */
-  async addFish(req, res, next) {
-    if (req.user.username !== req.params.username) {
-      res.json('You are not allowed to add fish for an other member')
-    }
+  /* async findFishByID (req, res, next) {
+     // Needs work does not go in to this function. Req id works.
+     const userData = await Data.getById(req.body.id)
+     res.json(userData)
+   } */
 
-    const username = req.params.username
-    const fishToAdd = {
-      username: req.params.username,
-      fishType: req.body.fishType,
-      position: req.body.position,
-      nameOfLocation: req.body.nameOfLocation,
-      city: req.body.city,
-      weight: req.body.weight,
-      length: req.body.length
-    }
+  /**
+   * Add a new catch for user.
+   *
+   * @param {object} req - Express request object.
+   * @param {object} res - Express response object.
+   * @param {Function} next - Express next middleware function.
+   */
+  async addCatch (req, res, next) {
+    const username = req.user.username
     try {
-      const postData = await fetch(process.env.DATA_URL,
-        {
-          method: 'POST',
-          headers: {
-            'PRIVATE-TOKEN': process.env.PERSONAL_ACCESS_TOKEN,
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify(fishToAdd)
-        })
-      const response = await postData.json()
       const data = await Data.insert({
         username: username,
         fishType: req.body.fishType,
@@ -164,26 +142,45 @@ export class DataController {
         nameOfLocation: req.body.nameOfLocation,
         city: req.body.city,
         weight: req.body.weight,
-        length: req.body.length,
-        _id: response.id
+        length: req.body.length
       })
-      const location = new URL(
-        `${req.protocol}://${req.get('host')}${req.baseUrl}/users/${req.params.id}/fish/${data._id}`
-      )
       const urls = [{
         rel: 'self',
-        href: location
+        href: `${req.protocol}://${req.get('host')}${req.baseUrl}/users/collection/${data.id}`,
+        description: 'Link to self'
       },
       {
-        rel: 'remove Fish',
+        rel: 'removeFish',
         method: 'DELETE',
-        href: process.env.BASE_URL + 'users/' + username + '/fish/' + data._id
+         href: `${req.protocol}://${req.get('host')}${req.baseUrl}/users/collection/${data.id}`,
+        description: ''
+
+      }, {
+        rel: 'changeFish',
+        method: 'PATCH/PUT?',
+        href: `${req.protocol}://${req.get('host')}${req.baseUrl}/users/collection/${data.id}`,
+        description: ''
+
+      }, {
+        rel: 'fishType',
+        method: 'GET',
+        href: `${req.protocol}://${req.get('host')}${req.baseUrl}/users/${username}/collection/fish_type`,
+        description: 'Write fishType in body'
+      },
+      {
+        rel: 'getUser',
+        method: 'GET',
+        href: `${req.protocol}://${req.get('host')}${req.baseUrl}/users/${username}/collection`,
+        description: 'Show all catches from user.'
       }]
-      data.links = urls
+      await data.save()
       res
-        .location(location.href)
         .status(201)
-        .json(data)
+        .json({
+          message: 'Data created.',
+          links: urls
+        }
+        )
     } catch (error) {
       let err = error
       if (error.name === 'ValidationError') {
