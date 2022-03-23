@@ -71,7 +71,7 @@ export class DataController {
         description: 'Remove catch from collection'
 
       }, {
-        method: 'PATCH/PUT?',
+        method: 'PUT',
         href: `${req.protocol}://${req.get('host')}${req.baseUrl}/users/collection/` + ' + id',
         description: 'Change data about catch. Add data in body.'
 
@@ -125,7 +125,7 @@ export class DataController {
         description: 'Remove catch from collection'
 
       }, {
-        method: 'PATCH/PUT?',
+        method: 'PUT',
         href: `${req.protocol}://${req.get('host')}${req.baseUrl}/users/collection/${data.id}`,
         description: 'Change data about catch. Add data in body.'
       },
@@ -185,7 +185,7 @@ export class DataController {
         description: 'Remove catch from collection'
 
       }, {
-        method: 'PATCH/PUT?',
+        method: 'PUT',
         href: `${req.protocol}://${req.get('host')}${req.baseUrl}/users/collection/` + ' + id',
         description: 'Change data about catch. Add data in body.'
 
@@ -230,7 +230,7 @@ export class DataController {
         description: 'Remove catch from collection'
 
       }, {
-        method: 'PATCH/PUT?',
+        method: 'PUT',
         href: `${req.protocol}://${req.get('host')}${req.baseUrl}/users/collection/${req.params.id}`,
         description: 'Change data about catch. Add data in body.'
 
@@ -285,7 +285,7 @@ export class DataController {
         description: 'Remove catch from collection'
 
       }, {
-        method: 'PATCH/PUT?',
+        method: 'PUT',
         href: `${req.protocol}://${req.get('host')}${req.baseUrl}/users/collection/${req.params.id}`,
         description: 'Change data about catch. Add data in body.'
 
@@ -301,7 +301,7 @@ export class DataController {
         description: 'Show all catches from all users.'
       }]
       res
-        .status(204)
+        .status(200)
         .json({
            message: 'Data updated.',
            links: urls
@@ -328,11 +328,38 @@ export class DataController {
   async delete(req, res, next) {
     try {
       await req.data.delete()
+        const urls = [{
+        method: 'GET',
+        href: `${req.protocol}://${req.get('host')}${req.baseUrl}/users/collection`,
+        description: 'Show all catches from logged in user.'
+      },
+      {
+        method: 'DELETE',
+        href: `${req.protocol}://${req.get('host')}${req.baseUrl}/users/collection/` + ' + id',
+        description: 'Remove catch from collection'
+
+      }, {
+        method: 'PUT',
+        href: `${req.protocol}://${req.get('host')}${req.baseUrl}/users/collection/` + ' + id',
+        description: 'Change data about catch. Add data in body.'
+      },
+      {
+        method: 'POST',
+        href: `${req.protocol}://${req.get('host')}${req.baseUrl}/users/collection`,
+        description: 'Add new catch to collection.'
+      },
+         {
+        method: 'GET',
+        href: `${req.protocol}://${req.get('host')}${req.baseUrl}/users/collection/all`,
+        description: 'Show all catches from all users.'
+      }]
       res
-        .status(204)
-        .end()
+        .status(200)
+        .json({
+           message: 'Data deleted.',
+           links: urls
+        })
     } catch (error) {
-      console.log(error)
       next(error)
     }
   }
