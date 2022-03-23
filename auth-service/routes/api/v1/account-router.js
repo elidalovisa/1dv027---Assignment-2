@@ -16,6 +16,10 @@ router.param('id', (req, res, next, id) => controller.loadData(req, res, next, i
 
 // Map HTTP verbs and route paths to controller actions.
 
+// Get all users
+router.get('/users', (req, res, next) => controller.getUsers(req, res, next))
+
+
 // Login user
 router.post('/users/login', (req, res, next) => controller.login(req, res, next))
 

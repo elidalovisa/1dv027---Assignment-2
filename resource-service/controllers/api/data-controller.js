@@ -8,7 +8,6 @@
 import createError from 'http-errors'
 import { Data } from '../../models/data.js'
 import { User } from '../../../auth-service/models/user.js'
-import fetch from 'node-fetch'
 
 /**
  * Encapsulates a controller.
@@ -41,10 +40,73 @@ export class DataController {
     }
   }
 
-  
-
+    
   /**
-   * Gets collection from all registred users,
+   * Gets entry point for API.
+   * Sends a JSON response containing all data.
+   *
+   * @param {object} req - Express request object.
+   * @param {object} res - Express response object.
+   * @param {Function} next - Express next middleware function.
+   */
+  async getEntry(req, res, next) {
+    try {
+       const urls = [{
+        rel: 'self',
+        method: 'GET',
+        href: `${req.protocol}://${req.get('host')}${req.baseUrl}`,
+        description: 'API entry point.'
+      },
+       {
+        method: 'POST',
+        href: `${req.protocol}://${req.get('host')}${req.baseUrl}/users/register`,
+        description: 'Register new user. Email, username and password in body as JSON'
+      },
+        {
+        method: 'POST',
+        href: `${req.protocol}://${req.get('host')}${req.baseUrl}/users/login`,
+        description: 'Login user. Email and password in body as JSON.'
+      },
+      {
+        method: 'GET',
+        href: `${req.protocol}://${req.get('host')}${req.baseUrl}/users/catches/all`,
+        description: 'Show all catches from all users.'
+      },
+       {
+        method: 'GET',
+        href: `${req.protocol}://${req.get('host')}${req.baseUrl}/users/catches`,
+        description: 'Show all catches from logged in user.'
+      },
+        {
+        method: 'POST',
+        href: `${req.protocol}://${req.get('host')}${req.baseUrl}/users/catches`,
+        description: 'Add new catch to catches. Data in body as JSON.'
+      },
+      {
+        method: 'PUT',
+        href: `${req.protocol}://${req.get('host')}${req.baseUrl}/users/catches/` + ' + id',
+        description: 'Change data about catch. Catch ID in parameter. Data in body as JSON.'
+      },
+       {
+        method: 'DELETE',
+        href: `${req.protocol}://${req.get('host')}${req.baseUrl}/users/catches/` + ' + id',
+        description: 'Remove catch from catches. Catch ID in parameter.'
+      }]
+      res
+        .header('Last-Modified', new Date())
+        .header('Cache-control', 'max-age=5')
+        .status(200)
+        .json({
+          message: 'Welcome to this API where you can save your latest fish catch!',
+          links: urls
+        })
+    } catch (error) {
+      next(error)
+    }
+  }
+  
+  /**
+   * Gets catches from all registred users,
    * Sends a JSON response containing all data.
    *
    * @param {object} req - Express request object.
@@ -53,43 +115,44 @@ export class DataController {
    */
   async getAll(req, res, next) {
     try {
-      const allCollection = await Data.getAll()
+      const allcatches = await Data.getAll()
        const urls = [{
         rel: 'self',
         method: 'GET',
-        href: `${req.protocol}://${req.get('host')}${req.baseUrl}/users/collection/all`,
+        href: `${req.protocol}://${req.get('host')}${req.baseUrl}/users/catches/all`,
         description: 'Show all catches from all users.'
       },
        {
         method: 'GET',
-        href: `${req.protocol}://${req.get('host')}${req.baseUrl}/users/collection`,
+        href: `${req.protocol}://${req.get('host')}${req.baseUrl}/users/catches`,
         description: 'Show all catches from logged in user.'
       },
       {
         method: 'DELETE',
-        href: `${req.protocol}://${req.get('host')}${req.baseUrl}/users/collection/` + ' + id',
-        description: 'Remove catch from collection'
+        href: `${req.protocol}://${req.get('host')}${req.baseUrl}/users/catches/` + ' + id',
+        description: 'Remove catch from catches'
 
       }, {
         method: 'PUT',
-        href: `${req.protocol}://${req.get('host')}${req.baseUrl}/users/collection/` + ' + id',
+        href: `${req.protocol}://${req.get('host')}${req.baseUrl}/users/catches/` + ' + id',
         description: 'Change data about catch. Add data in body.'
 
       },
       {
         method: 'POST',
-        href: `${req.protocol}://${req.get('host')}${req.baseUrl}/users/collection`,
-        description: 'Add new catch to collection.'
+        href: `${req.protocol}://${req.get('host')}${req.baseUrl}/users/catches`,
+        description: 'Add new catch to catches.'
       }]
       res
+        .header('Last-Modified', new Date())
+        .header('Cache-control', 'max-age=5')
         .status(200)
         .json({
           message: 'Data fetched.',
-          data: allCollection,
+          data: allcatches,
           links: urls
         })
     } catch (error) {
-      console.log(error)
       next(error)
     }
   }
@@ -116,37 +179,38 @@ export class DataController {
       const urls = [{
         rel: 'self',
         method: 'GET',
-        href: `${req.protocol}://${req.get('host')}${req.baseUrl}/users/collection/${data.id}`,
+        href: `${req.protocol}://${req.get('host')}${req.baseUrl}/users/catches/${data.id}`,
         description: 'Show data about catch.'
       },
       {
         method: 'DELETE',
-        href: `${req.protocol}://${req.get('host')}${req.baseUrl}/users/collection/${data.id}`,
-        description: 'Remove catch from collection'
+        href: `${req.protocol}://${req.get('host')}${req.baseUrl}/users/catches/${data.id}`,
+        description: 'Remove catch from catches'
 
       }, {
         method: 'PUT',
-        href: `${req.protocol}://${req.get('host')}${req.baseUrl}/users/collection/${data.id}`,
+        href: `${req.protocol}://${req.get('host')}${req.baseUrl}/users/catches/${data.id}`,
         description: 'Change data about catch. Add data in body.'
       },
       {
         method: 'GET',
-        href: `${req.protocol}://${req.get('host')}${req.baseUrl}/users/collection`,
+        href: `${req.protocol}://${req.get('host')}${req.baseUrl}/users/catches`,
         description: 'Show all catches from logged in user.'
       },
       {
         method: 'POST',
-        href: `${req.protocol}://${req.get('host')}${req.baseUrl}/users/collection`,
-        description: 'Add new catch to collection.'
+        href: `${req.protocol}://${req.get('host')}${req.baseUrl}/users/catches`,
+        description: 'Add new catch to catches.'
       },
          {
         method: 'GET',
-        href: `${req.protocol}://${req.get('host')}${req.baseUrl}/users/collection/all`,
+        href: `${req.protocol}://${req.get('host')}${req.baseUrl}/users/catches/all`,
         description: 'Show all catches from all users.'
       }]
       await data.save()
       res
         .status(201)
+        .header('Cache-control', 'max-age=5')
         .json({
           message: 'Data created.',
           links: urls
@@ -171,36 +235,38 @@ export class DataController {
    * @param {object} res - Express response object.
    * @param {Function} next - Express next middleware function.
    */
-  async getCollection(req, res, next) {
+  async getCatches(req, res, next) {
     const userData = await Data.getByUser(req.user.username)
         const urls = [{
         rel: 'self',
         method: 'GET',
-        href: `${req.protocol}://${req.get('host')}${req.baseUrl}/users/collection`,
+        href: `${req.protocol}://${req.get('host')}${req.baseUrl}/users/catches`,
         description: 'Show all catches from logged in user.'
       },
       {
         method: 'DELETE',
-        href: `${req.protocol}://${req.get('host')}${req.baseUrl}/users/collection/` + ' + id',
-        description: 'Remove catch from collection'
+        href: `${req.protocol}://${req.get('host')}${req.baseUrl}/users/catches/` + ' + id',
+        description: 'Remove catch from catches'
 
       }, {
         method: 'PUT',
-        href: `${req.protocol}://${req.get('host')}${req.baseUrl}/users/collection/` + ' + id',
+        href: `${req.protocol}://${req.get('host')}${req.baseUrl}/users/catches/` + ' + id',
         description: 'Change data about catch. Add data in body.'
 
       },
       {
         method: 'POST',
-        href: `${req.protocol}://${req.get('host')}${req.baseUrl}/users/collection`,
-        description: 'Add new catch to collection.'
+        href: `${req.protocol}://${req.get('host')}${req.baseUrl}/users/catches`,
+        description: 'Add new catch to catches.'
       },
          {
         method: 'GET',
-        href: `${req.protocol}://${req.get('host')}${req.baseUrl}/users/collection/all`,
+        href: `${req.protocol}://${req.get('host')}${req.baseUrl}/users/catches/all`,
         description: 'Show all catches from all users.'
       }]
       res
+        .header('Last-Modified', new Date())
+        .header('Cache-control', 'max-age=5')
         .status(200)
         .json({
           message: 'Data fetched.',
@@ -221,31 +287,33 @@ export class DataController {
     const urls = [{
         rel: 'self',
         method: 'GET',
-        href: `${req.protocol}://${req.get('host')}${req.baseUrl}/users/collection/${req.params.id}`,
+        href: `${req.protocol}://${req.get('host')}${req.baseUrl}/users/catches/${req.params.id}`,
         description: 'Show data about catch.'
       },
       {
         method: 'DELETE',
-        href: `${req.protocol}://${req.get('host')}${req.baseUrl}/users/collection/${req.params.id}`,
-        description: 'Remove catch from collection'
+        href: `${req.protocol}://${req.get('host')}${req.baseUrl}/users/catches/${req.params.id}`,
+        description: 'Remove catch from catches'
 
       }, {
         method: 'PUT',
-        href: `${req.protocol}://${req.get('host')}${req.baseUrl}/users/collection/${req.params.id}`,
+        href: `${req.protocol}://${req.get('host')}${req.baseUrl}/users/catches/${req.params.id}`,
         description: 'Change data about catch. Add data in body.'
 
       },
       {
         method: 'POST',
-        href: `${req.protocol}://${req.get('host')}${req.baseUrl}/users/collection`,
-        description: 'Add new catch to collection.'
+        href: `${req.protocol}://${req.get('host')}${req.baseUrl}/users/catches`,
+        description: 'Add new catch to catches.'
       },
          {
         method: 'GET',
-        href: `${req.protocol}://${req.get('host')}${req.baseUrl}/users/collection/all`,
+        href: `${req.protocol}://${req.get('host')}${req.baseUrl}/users/catches/all`,
         description: 'Show all catches from all users.'
       }]
       res
+        .header('Last-Modified', new Date())
+        .header('Cache-control', 'max-age=5')
         .status(200)
         .json({
           message: 'Data fetched.',
@@ -276,31 +344,32 @@ export class DataController {
         const urls = [{
         rel: 'self',
         method: 'GET',
-        href: `${req.protocol}://${req.get('host')}${req.baseUrl}/users/collection/${req.params.id}`,
+        href: `${req.protocol}://${req.get('host')}${req.baseUrl}/users/catches/${req.params.id}`,
         description: 'Show data about catch.'
       },
       {
         method: 'DELETE',
-        href: `${req.protocol}://${req.get('host')}${req.baseUrl}/users/collection/${req.params.id}`,
-        description: 'Remove catch from collection'
+        href: `${req.protocol}://${req.get('host')}${req.baseUrl}/users/catches/${req.params.id}`,
+        description: 'Remove catch from catches'
 
       }, {
         method: 'PUT',
-        href: `${req.protocol}://${req.get('host')}${req.baseUrl}/users/collection/${req.params.id}`,
+        href: `${req.protocol}://${req.get('host')}${req.baseUrl}/users/catches/${req.params.id}`,
         description: 'Change data about catch. Add data in body.'
 
       },
       {
         method: 'POST',
-        href: `${req.protocol}://${req.get('host')}${req.baseUrl}/users/collection`,
-        description: 'Add new catch to collection.'
+        href: `${req.protocol}://${req.get('host')}${req.baseUrl}/users/catches`,
+        description: 'Add new catch to catches.'
       },
          {
         method: 'GET',
-        href: `${req.protocol}://${req.get('host')}${req.baseUrl}/users/collection/all`,
+        href: `${req.protocol}://${req.get('host')}${req.baseUrl}/users/catches/all`,
         description: 'Show all catches from all users.'
       }]
       res
+        .header('Cache-control', 'max-age=5')
         .status(200)
         .json({
            message: 'Data updated.',
@@ -330,30 +399,31 @@ export class DataController {
       await req.data.delete()
         const urls = [{
         method: 'GET',
-        href: `${req.protocol}://${req.get('host')}${req.baseUrl}/users/collection`,
+        href: `${req.protocol}://${req.get('host')}${req.baseUrl}/users/catches`,
         description: 'Show all catches from logged in user.'
       },
       {
         method: 'DELETE',
-        href: `${req.protocol}://${req.get('host')}${req.baseUrl}/users/collection/` + ' + id',
-        description: 'Remove catch from collection'
+        href: `${req.protocol}://${req.get('host')}${req.baseUrl}/users/catches/` + ' + id',
+        description: 'Remove catch from catches'
 
       }, {
         method: 'PUT',
-        href: `${req.protocol}://${req.get('host')}${req.baseUrl}/users/collection/` + ' + id',
+        href: `${req.protocol}://${req.get('host')}${req.baseUrl}/users/catches/` + ' + id',
         description: 'Change data about catch. Add data in body.'
       },
       {
         method: 'POST',
-        href: `${req.protocol}://${req.get('host')}${req.baseUrl}/users/collection`,
-        description: 'Add new catch to collection.'
+        href: `${req.protocol}://${req.get('host')}${req.baseUrl}/users/catches`,
+        description: 'Add new catch to catches.'
       },
          {
         method: 'GET',
-        href: `${req.protocol}://${req.get('host')}${req.baseUrl}/users/collection/all`,
+        href: `${req.protocol}://${req.get('host')}${req.baseUrl}/users/catches/all`,
         description: 'Show all catches from all users.'
       }]
       res
+        .header('Cache-control', 'max-age=5')
         .status(200)
         .json({
            message: 'Data deleted.',

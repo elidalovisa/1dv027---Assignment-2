@@ -89,6 +89,16 @@ schema.statics.getByUser = async function (username) {
   return this.findOne({ username: username })
 }
 
+
+/**
+ * Gets all users.
+ *
+ * @returns {Promise<Data[]>} The Promise to be fulfilled.
+ */
+schema.statics.getAll = async function () {
+  return this.find({})
+}
+
 /**
  * Inserts a new user.
  *

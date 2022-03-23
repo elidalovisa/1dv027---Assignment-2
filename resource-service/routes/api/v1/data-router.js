@@ -82,39 +82,42 @@ const hasPermission = (req, res, next, permissionLevel) => {
 // Provide req.data to the route if :id is present in the route path.
 router.param('id', (req, res, next, id) => controller.loadData(req, res, next, id))
 
+// GET entry point for API.
+router.get('/', (req, res, next) => controller.getEntry(req, res, next))
+
 // GET all fishes from all users.
-router.get('/users/collection/all',
+router.get('/users/catches/all',
   authenticateJWT,
   (req, res, next) => hasPermission(req, res, next, PermissionLevels.DELETE),
   (req, res, next) => controller.getAll(req, res, next)
 )
 
 // POST add a catch for one user
-router.post('/users/collection',
+router.post('/users/catches',
   authenticateJWT,
   (req, res, next) => hasPermission(req, res, next, PermissionLevels.DELETE),
   (req, res, next) => controller.addCatch(req, res, next))
 
 // GET all catches from the logged in user
-router.get('/users/collection',
+router.get('/users/catches',
   authenticateJWT,
   (req, res, next) => hasPermission(req, res, next, PermissionLevels.DELETE),
-  (req, res, next) => controller.getCollection(req, res, next))
+  (req, res, next) => controller.getCatches(req, res, next))
 
 // GET /:id specific catch from logged in user 
-router.get('/users/collection/:id',
+router.get('/users/catches/:id',
   authenticateJWT,
   (req, res, next) => hasPermission(req, res, next, PermissionLevels.DELETE),
   (req, res, next) => controller.getCatch(req, res, next))
 
 // PUT data/:id
-router.put('/users/collection/:id',
+router.put('/users/catches/:id',
   authenticateJWT,
   (req, res, next) => hasPermission(req, res, next, PermissionLevels.DELETE),
   (req, res, next) => controller.update(req, res, next))
 
 // DELETE data/:id
-router.delete('/users/collection/:id',
+router.delete('/users/catches/:id',
   authenticateJWT,
   (req, res, next) => hasPermission(req, res, next, PermissionLevels.DELETE),
   (req, res, next) => controller.delete(req, res, next)
