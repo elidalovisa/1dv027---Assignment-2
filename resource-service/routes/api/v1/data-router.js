@@ -113,11 +113,8 @@ router.put('/users/collection/:id',
   (req, res, next) => hasPermission(req, res, next, PermissionLevels.DELETE),
   (req, res, next) => controller.update(req, res, next))
 
-// PATCH data/:id
-router.patch('/:id', (req, res, next) => controller.updatePartially(req, res, next))
-
 // DELETE data/:id
-router.delete('/users/:username/collection/:id',
+router.delete('/users/collection/:id',
   authenticateJWT,
   (req, res, next) => hasPermission(req, res, next, PermissionLevels.DELETE),
   (req, res, next) => controller.delete(req, res, next)

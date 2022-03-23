@@ -255,84 +255,6 @@ export class DataController {
    } 
 
   /**
-   * Sends a JSON response containing requested data.
-   *
-   * @param {object} req - Express request object.
-   * @param {object} res - Express response object.
-   * @param {Function} next - Express next middleware function.
-   */
-  async find(req, res, next) {
-    console.log(req.data)
-    const resData = {
-      user: req.data.username,
-      fishType: req.data.fishType,
-      position: req.data.position,
-      nameOfLocation: req.data.nameOfLocation,
-      city: req.data.city,
-      weight: req.data.weight,
-      length: req.data.length,
-      _id: req.data._id,
-      links: [{
-        rel: 'self',
-        href: process.env.BASE_URL
-      },
-      {
-        rel: 'addFish',
-        method: 'POST',
-        href: process.env.BASE_URL + 'api/v1/add-fish' + '/'
-      }]
-    }
-    res.json(resData)
-  }
-
-  /**
-   * Updates a specific fish catch.
-   *
-   * @param {object} req - Express request object.
-   * @param {object} res - Express response object.
-   * @param {Function} next - Express next middleware function.
-   */
-  async updatePartially(req, res, next) {
-    const catchId = req.params.id
-    console.log(catchId)
-    const postData = await fetch(process.env.DATA_URL + '/' + catchId,
-      {
-        method: 'POST',
-        headers: {
-          'PRIVATE-TOKEN': req.headers.authorization,
-          'Content-Type': 'application/json'
-        }
-      })
-    const response = await postData.json()
-    console.log(response)
-    try {
-      await req.data.update({
-        user: req.body.user,
-        fishType: req.body.fishType,
-        position: req.body.position,
-        nameOfLocation: req.body.nameOfLocation,
-        city: req.body.city,
-        weight: req.body.weight,
-        length: req.body.length,
-        imageURL: req.body.imageURL,
-        _id: response.id
-      })
-      res
-        .status(204)
-        .end()
-    } catch (error) {
-      let err = error
-      if (error.name === 'ValidationError') {
-        // Validation error(s).
-        err = createError(400)
-        err.innerException = error
-      }
-
-      next(err)
-    }
-  }
-
-  /**
    * Updates specific data.
    *
    * @param {object} req - Express request object.
@@ -351,8 +273,39 @@ export class DataController {
         weight: req.body.weight,
         length: req.body.length
       })
+        const urls = [{
+        rel: 'self',
+        method: 'GET',
+        href: `${req.protocol}://${req.get('host')}${req.baseUrl}/users/collection/${req.params.id}`,
+        description: 'Show data about catch.'
+      },
+      {
+        method: 'DELETE',
+        href: `${req.protocol}://${req.get('host')}${req.baseUrl}/users/collection/${req.params.id}`,
+        description: 'Remove catch from collection'
+
+      }, {
+        method: 'PATCH/PUT?',
+        href: `${req.protocol}://${req.get('host')}${req.baseUrl}/users/collection/${req.params.id}`,
+        description: 'Change data about catch. Add data in body.'
+
+      },
+      {
+        method: 'POST',
+        href: `${req.protocol}://${req.get('host')}${req.baseUrl}/users/collection`,
+        description: 'Add new catch to collection.'
+      },
+         {
+        method: 'GET',
+        href: `${req.protocol}://${req.get('host')}${req.baseUrl}/users/collection/all`,
+        description: 'Show all catches from all users.'
+      }]
       res
         .status(204)
+        .json({
+           message: 'Data updated.',
+           links: urls
+        })
         .end()
     } catch (error) {
       let err = error
@@ -366,30 +319,20 @@ export class DataController {
   }
 
   /**
-   * Deletes the specified fish
+   * Deletes the specified catch.
    *
    * @param {object} req - Express request object.
    * @param {object} res - Express response object.
    * @param {Function} next - Express next middleware function.
    */
   async delete(req, res, next) {
-    const fishToDelete = await fetch('http://localhost:8081/api/v1/users/elsa/fish/621966e15e6a51efad2c4cf3',
-      {
-        method: 'DELETE',
-        headers: {
-          'PRIVATE-TOKEN': req.headers.authorization,
-          'Content-Type': 'application/json'
-        }
-      })
-    const response = await fishToDelete.json()
-    console.log(response)
     try {
       await req.data.delete()
-
       res
         .status(204)
         .end()
     } catch (error) {
+      console.log(error)
       next(error)
     }
   }
