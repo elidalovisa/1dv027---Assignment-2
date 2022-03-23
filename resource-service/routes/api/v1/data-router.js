@@ -77,13 +77,13 @@ const hasPermission = (req, res, next, permissionLevel) => {
 // ------------------------------------------------------------------------------
 
 // Provide req.data to the route if :username is present in the route path.
-router.param('username', (req, res, next, username) => controller.loadData(req, res, next, username))
+//router.param('username', (req, res, next, username) => controller.loadData(req, res, next, username))
 
 // Provide req.data to the route if :id is present in the route path.
-router.param('id', (req, res, next, id, username) => controller.loadDataID(req, res, next, id, username))
+router.param('id', (req, res, next, id) => controller.loadData(req, res, next, id))
 
 // GET all fishes from all users.
-router.get('/users/fish',
+router.get('/users/collection/all',
   authenticateJWT,
   (req, res, next) => hasPermission(req, res, next, PermissionLevels.READ),
   (req, res, next) => controller.findAll(req, res, next)

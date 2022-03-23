@@ -15,17 +15,17 @@ import fetch from 'node-fetch'
  */
 export class DataController {
   /**
-   * Provide req.data to the route if :username is present.
+   * Provide req.data to the route if :id is present.
    *
    * @param {object} req - Express request object.
    * @param {object} res - Express response object.
    * @param {Function} next - Express next middleware function.
-   * @param {string} username - The value of the user data to load.
+   * @param {string} id - The value of the user data to load.
    */
-  async loadData(req, res, next, username) {
+  async loadData(req, res, next, id) {
     try {
       // Get the data
-      const data = await User.getByUser(username)
+      const data = await Data.getById(id)
       // If no data found send a 404 (Not Found).
       if (!data) {
         next(createError(404))
@@ -68,6 +68,76 @@ export class DataController {
      }
      return id
    }*/
+
+  /**
+   * Add a new catch for user.
+   *
+   * @param {object} req - Express request object.
+   * @param {object} res - Express response object.
+   * @param {Function} next - Express next middleware function.
+   */
+  async addCatch (req, res, next) {
+    const username = req.user.username
+    try {
+      const data = await Data.insert({
+        username: username,
+        fishType: req.body.fishType,
+        position: req.body.position,
+        nameOfLocation: req.body.nameOfLocation,
+        city: req.body.city,
+        weight: req.body.weight,
+        length: req.body.length
+      })
+      const urls = [{
+        rel: 'self',
+        method: 'GET',
+        href: `${req.protocol}://${req.get('host')}${req.baseUrl}/users/collection/${data.id}`,
+        description: 'Show data about catch.'
+      },
+      {
+        method: 'DELETE',
+        href: `${req.protocol}://${req.get('host')}${req.baseUrl}/users/collection/${data.id}`,
+        description: 'Remove catch from collection'
+
+      }, {
+        method: 'PATCH/PUT?',
+        href: `${req.protocol}://${req.get('host')}${req.baseUrl}/users/collection/${data.id}`,
+        description: 'Change data about catch'
+
+      },
+      {
+        method: 'GET',
+        href: `${req.protocol}://${req.get('host')}${req.baseUrl}/users/collection`,
+        description: 'Show all catches from user.'
+      },
+      {
+        method: 'POST',
+        href: `${req.protocol}://${req.get('host')}${req.baseUrl}/users/collection`,
+        description: 'Add new catch to collection.'
+      },
+         {
+        method: 'GET',
+        href: `${req.protocol}://${req.get('host')}${req.baseUrl}/users/collection/all`,
+        description: 'Show all catches from all users.'
+      }]
+      await data.save()
+      res
+        .status(201)
+        .json({
+          message: 'Data created.',
+          links: urls
+        }
+        )
+    } catch (error) {
+      let err = error
+      if (error.name === 'ValidationError') {
+        // Validation error(s).
+        err = createError(400)
+        err.innerException = error
+      }
+      next(err)
+    }
+  }
 
   /**
    * Sends a JSON response containing requested data.
@@ -125,72 +195,6 @@ export class DataController {
      res.json(userData)
    } */
 
-  /**
-   * Add a new catch for user.
-   *
-   * @param {object} req - Express request object.
-   * @param {object} res - Express response object.
-   * @param {Function} next - Express next middleware function.
-   */
-  async addCatch (req, res, next) {
-    const username = req.user.username
-    try {
-      const data = await Data.insert({
-        username: username,
-        fishType: req.body.fishType,
-        position: req.body.position,
-        nameOfLocation: req.body.nameOfLocation,
-        city: req.body.city,
-        weight: req.body.weight,
-        length: req.body.length
-      })
-      const urls = [{
-        rel: 'self',
-        href: `${req.protocol}://${req.get('host')}${req.baseUrl}/users/collection/${data.id}`,
-        description: 'Link to self'
-      },
-      {
-        rel: 'removeFish',
-        method: 'DELETE',
-         href: `${req.protocol}://${req.get('host')}${req.baseUrl}/users/collection/${data.id}`,
-        description: ''
-
-      }, {
-        rel: 'changeFish',
-        method: 'PATCH/PUT?',
-        href: `${req.protocol}://${req.get('host')}${req.baseUrl}/users/collection/${data.id}`,
-        description: ''
-
-      }, {
-        rel: 'fishType',
-        method: 'GET',
-        href: `${req.protocol}://${req.get('host')}${req.baseUrl}/users/${username}/collection/fish_type`,
-        description: 'Write fishType in body'
-      },
-      {
-        rel: 'getUser',
-        method: 'GET',
-        href: `${req.protocol}://${req.get('host')}${req.baseUrl}/users/${username}/collection`,
-        description: 'Show all catches from user.'
-      }]
-      await data.save()
-      res
-        .status(201)
-        .json({
-          message: 'Data created.',
-          links: urls
-        }
-        )
-    } catch (error) {
-      let err = error
-      if (error.name === 'ValidationError') {
-        // Validation error(s).
-        err = createError(400)
-        err.innerException = error
-      }
-      next(err)
-    }
-  }
 
   /**
    * Sends a JSON response containing all data.
