@@ -146,6 +146,51 @@ export class DataController {
    * @param {object} res - Express response object.
    * @param {Function} next - Express next middleware function.
    */
+  async getCollection(req, res, next) {
+    const userData = await Data.getByUser(req.user.username)
+        const urls = [{
+        rel: 'self',
+        method: 'GET',
+        href: `${req.protocol}://${req.get('host')}${req.baseUrl}/users/collection`,
+        description: 'Show all catches from user.'
+      },
+      {
+        method: 'DELETE',
+        href: `${req.protocol}://${req.get('host')}${req.baseUrl}/users/collection/` + ' + id',
+        description: 'Remove catch from collection'
+
+      }, {
+        method: 'PATCH/PUT?',
+        href: `${req.protocol}://${req.get('host')}${req.baseUrl}/users/collection/` + ' + id',
+        description: 'Change data about catch'
+
+      },
+      {
+        method: 'POST',
+        href: `${req.protocol}://${req.get('host')}${req.baseUrl}/users/collection`,
+        description: 'Add new catch to collection.'
+      },
+         {
+        method: 'GET',
+        href: `${req.protocol}://${req.get('host')}${req.baseUrl}/users/collection/all`,
+        description: 'Show all catches from all users.'
+      }]
+      res
+        .status(200)
+        .json({
+          message: 'Data fetched.',
+          data: userData,
+          links: urls
+        })
+  }
+
+  /**
+   * Sends a JSON response containing requested data.
+   *
+   * @param {object} req - Express request object.
+   * @param {object} res - Express response object.
+   * @param {Function} next - Express next middleware function.
+   */
   async find(req, res, next) {
     console.log(req.data)
     const resData = {
@@ -170,17 +215,7 @@ export class DataController {
     res.json(resData)
   }
 
-  /**
-   * Sends a JSON response containing requested data.
-   *
-   * @param {object} req - Express request object.
-   * @param {object} res - Express response object.
-   * @param {Function} next - Express next middleware function.
-   */
-  async getCollection(req, res, next) {
-    const userData = await Data.getByUser(req.params.username)
-    res.json(userData)
-  }
+
 
   /**
    * Sends a JSON response containing requested data.

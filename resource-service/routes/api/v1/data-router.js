@@ -97,8 +97,11 @@ router.post('/users/collection',
   (req, res, next) => hasPermission(req, res, next, PermissionLevels.DELETE),
   (req, res, next) => controller.addCatch(req, res, next))
 
-// GET /:username all fish from one user
-router.get('/users/:username/collection', (req, res, next) => controller.getFishCollection(req, res, next))
+// GET all catches from one user
+router.get('/users/collection',
+  authenticateJWT,
+  (req, res, next) => hasPermission(req, res, next, PermissionLevels.DELETE),
+  (req, res, next) => controller.getCollection(req, res, next))
 
 // GET /:id all fish from one user
 router.get('/users/:username/collection/fish_type', (req, res, next) => controller.find(req, res, next))
