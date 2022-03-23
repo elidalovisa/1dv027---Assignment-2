@@ -73,7 +73,7 @@ export class DataController {
       }, {
         method: 'PATCH/PUT?',
         href: `${req.protocol}://${req.get('host')}${req.baseUrl}/users/collection/` + ' + id',
-        description: 'Change data about catch'
+        description: 'Change data about catch. Add data in body.'
 
       },
       {
@@ -127,7 +127,7 @@ export class DataController {
       }, {
         method: 'PATCH/PUT?',
         href: `${req.protocol}://${req.get('host')}${req.baseUrl}/users/collection/${data.id}`,
-        description: 'Change data about catch'
+        description: 'Change data about catch. Add data in body.'
       },
       {
         method: 'GET',
@@ -187,7 +187,7 @@ export class DataController {
       }, {
         method: 'PATCH/PUT?',
         href: `${req.protocol}://${req.get('host')}${req.baseUrl}/users/collection/` + ' + id',
-        description: 'Change data about catch'
+        description: 'Change data about catch. Add data in body.'
 
       },
       {
@@ -232,7 +232,7 @@ export class DataController {
       }, {
         method: 'PATCH/PUT?',
         href: `${req.protocol}://${req.get('host')}${req.baseUrl}/users/collection/${req.params.id}`,
-        description: 'Change data about catch'
+        description: 'Change data about catch. Add data in body.'
 
       },
       {
@@ -340,32 +340,16 @@ export class DataController {
    * @param {Function} next - Express next middleware function.
    */
   async update(req, res, next) {
-    const data = {
-      user: req.body.user // check user?
-      // add catchID? contentType: req.body.contentType
-    }
-    const postData = await fetch(process.env.DATA_URL,
-      {
-        method: 'PUT',
-        headers: {
-          // 'PRIVATE-TOKEN': process.env.PERSONAL_ACCESS_TOKEN,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(data)
-      })
-    const response = await postData.json()
+     const username = req.user.username
     try {
-      // todo: change data dependng on what type of API Im doing
       await req.data.update({
-        user: req.body.user,
+        username: username,
         fishType: req.body.fishType,
         position: req.body.position,
         nameOfLocation: req.body.nameOfLocation,
         city: req.body.city,
         weight: req.body.weight,
-        length: req.body.length,
-        imageURL: req.body.imageURL,
-        _id: response.id
+        length: req.body.length
       })
       res
         .status(204)

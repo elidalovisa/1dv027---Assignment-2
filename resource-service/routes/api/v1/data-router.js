@@ -89,8 +89,6 @@ router.get('/users/collection/all',
   (req, res, next) => controller.getAll(req, res, next)
 )
 
-//router.get('/users/fish', (req, res, next) => controller.findAll(req, res, next))
-
 // POST add a catch for one user
 router.post('/users/collection',
   authenticateJWT,
@@ -109,13 +107,11 @@ router.get('/users/collection/:id',
   (req, res, next) => hasPermission(req, res, next, PermissionLevels.DELETE),
   (req, res, next) => controller.getCatch(req, res, next))
 
-// GET /:id all fish from one user
-// router.get('/users/:username/collection/fish_type', (req, res, next) => controller.find(req, res, next))
-
-
-
 // PUT data/:id
-router.put('add-fish/:id', (req, res, next) => controller.update(req, res, next))
+router.put('/users/collection/:id',
+  authenticateJWT,
+  (req, res, next) => hasPermission(req, res, next, PermissionLevels.DELETE),
+  (req, res, next) => controller.update(req, res, next))
 
 // PATCH data/:id
 router.patch('/:id', (req, res, next) => controller.updatePartially(req, res, next))
