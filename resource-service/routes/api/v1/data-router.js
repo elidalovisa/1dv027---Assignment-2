@@ -8,8 +8,11 @@
 import express from 'express'
 import createError from 'http-errors'
 import { DataController } from '../../../controllers/api/data-controller.js'
+import { AccountController } from '../../../controllers/api/account-controller.js'
 import jwt from 'jsonwebtoken'
+
 export const router = express.Router()
+const controllerAuth = new AccountController()
 const controller = new DataController()
 
 // ------------------------------------------------------------------------------
@@ -84,6 +87,22 @@ router.param('id', (req, res, next, id) => controller.loadData(req, res, next, i
 
 // GET entry point for API.
 router.get('/', (req, res, next) => controller.getEntry(req, res, next))
+
+// Provide req.data to the route if :id is present in the route path.
+router.param('id', (req, res, next, id) => controller.loadData(req, res, next, id))
+
+// Map HTTP verbs and route paths to controller actions.
+
+// Get all users
+router.get('/users', (req, res, next) => controllerAuth.getUsers(req, res, next))
+
+
+// Login user
+router.post('/users/login', (req, res, next) => controllerAuth.login(req, res, next))
+
+// Register new user
+router.post('/users/register', (req, res, next) => controllerAuth.register(req, res, next))
+
 
 // GET all fishes from all users.
 router.get('/users/catches/all',
