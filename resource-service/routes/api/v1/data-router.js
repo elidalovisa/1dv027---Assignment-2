@@ -112,6 +112,8 @@ router.get('/users/catches/:id',
 
 // GET catch with specific parameters from the logged in user
 router.get('/users/catches/fish/details',
+  authenticateJWT,
+  (req, res, next) => hasPermission(req, res, next, PermissionLevels.DELETE),
   (req, res, next) => controller.getParam(req, res, next))
 
 // PUT data/:id
