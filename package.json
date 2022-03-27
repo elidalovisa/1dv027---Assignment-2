@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "1DV027 - Examinataion API",
   "type": "module",
-  "main": "src/server.js",
+  "main": "server.js",
   "scripts": {
     "start": "node server.js",
     "start:dev": "nodemon --inspect -r dotenv/config resource-service/src/server.js",
