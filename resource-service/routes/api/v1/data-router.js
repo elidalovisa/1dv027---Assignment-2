@@ -8,7 +8,7 @@
 import express from 'express'
 import createError from 'http-errors'
 import { DataController } from '../../../controllers/api/data-controller.js'
-import { AccountController } from '../../../../../controllers/api/account-controller.js'
+import { AccountController } from '../../../../auth-service/controllers/api/account-controller.js'
 import jwt from 'jsonwebtoken'
 
 export const router = express.Router()
