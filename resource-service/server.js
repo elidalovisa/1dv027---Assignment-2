@@ -9,8 +9,8 @@ import express from 'express'
 import dotenv from 'dotenv'
 import helmet from 'helmet'
 import logger from 'morgan'
-import { router } from 'routes/router.js'
-import { connectDB } from 'config/mongoose.js'
+import { router } from '/routes/router.js'
+import { connectDB } from './config/mongoose.js'
 dotenv.config()
 /**
  * The main function of the application.
