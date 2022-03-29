@@ -9,10 +9,9 @@ import express from 'express'
 import dotenv from 'dotenv'
 import helmet from 'helmet'
 import logger from 'morgan'
-import { router } from '/resource-service/api/v1/router.js'
-import { connectDB } from '/resource-service/config/mongoose.js'
+import { router } from 'resource-service/api/v1/router.js'
+import { connectDB } from 'resource-service/config/mongoose.js'
 dotenv.config()
-
 /**
  * The main function of the application.
  */
