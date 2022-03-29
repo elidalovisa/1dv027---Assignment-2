@@ -1,1 +1,1 @@
-web:node resource-service/server.js
+web: node resource-service/server.js

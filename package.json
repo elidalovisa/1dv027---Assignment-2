@@ -7,7 +7,7 @@
   "scripts": {
     "start": "node resource-service/server.js",
     "start:dev": "nodemon --inspect -r dotenv/config resource-service/server.js",
-    "start:dev:auth": "nodemon --inspect -r dotenv/config auth-service/server.js",
+    "start:dev:auth": "nodemon --inspect -r dotenv/config resource-service/server.js",
     "lint": "npx eslint ./src || exit 0",
     "lint:fix": "npx eslint ./src --fix || exit 0"
   },
