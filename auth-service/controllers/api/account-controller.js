@@ -134,6 +134,7 @@ export class AccountController {
    * @param {Function} next - Express next middleware function.
    */
   async register (req, res, next) {
+    console.log('test')
     try {
       const user = await User.insert({
         email: req.body.email,
@@ -174,7 +175,7 @@ export class AccountController {
       } else if (error.name === 'ValidationError') {
         // Validation error(s).
         err = createError(400)
-        res.json(err)
+        console.log(err)
         err.innerException = error
       }
 
