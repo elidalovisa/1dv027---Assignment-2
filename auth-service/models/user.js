@@ -57,7 +57,7 @@ schema.virtual('id').get(function () {
 
 // Salts and hashes password before save.
 schema.pre('save', async function () {
-  this.password = await bcrypt.hash(this.password, 10)
+  this.password = await bcrypt.hashSync(this.password, 10)
 })
 
 /**
