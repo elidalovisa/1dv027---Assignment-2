@@ -18,6 +18,7 @@ dotenv.config()
 const main = async () => {
   await connectDB()
   const app = express()
+  const port = process.env.PORT || 8000
 
   // Set various HTTP headers to make the application little more secure (https://www.npmjs.com/package/helmet).
   app.use(helmet())
@@ -53,8 +54,8 @@ const main = async () => {
   })
 
   // Starts the HTTP server listening for connections.
-  app.listen(process.env.PORT, () => {
-    console.log(`Server running at http://localhost:${process.env.PORT}`)
+  app.listen(port, () => {
+    console.log(`Server running at http://localhost:${port}`)
     console.log('Press Ctrl-C to terminate...')
   })
 }
