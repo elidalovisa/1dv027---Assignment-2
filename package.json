@@ -2,6 +2,9 @@
   "name": "api-design-assignment",
   "version": "1.0.0",
   "description": "1DV027 - Examinataion API",
+  "engines": {
+    "node": "16.x"
+  }
   "type": "module",
   "main": "server.js",
   "scripts": {
