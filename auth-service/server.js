@@ -6,27 +6,30 @@
  */
 
 import express from 'express'
-import dotenv from 'dotenv'
+import cors from 'cors'
 import helmet from 'helmet'
 import logger from 'morgan'
-import { router } from './routes/router.js'
-import { connectDB } from './config/mongoose.js'
-dotenv.config()
+import { router } from '../routes/router.js'
+import { connectDB } from '../config/mongoose.js'
+
 /**
  * The main function of the application.
  */
 const main = async () => {
   await connectDB()
+
   const app = express()
 
   // Set various HTTP headers to make the application little more secure (https://www.npmjs.com/package/helmet).
   app.use(helmet())
 
+  app.use(cors())
+
   // Set up a morgan logger using the dev format for log entries.
   app.use(logger('dev'))
 
   // Parse requests of the content type application/json.
-  app.use(express.json({ limit: '500kb' }))
+  app.use(express.json())
 
   // Register routes.
   app.use('/', router)
@@ -42,19 +45,24 @@ const main = async () => {
           status: err.status,
           message: err.message
         })
-      console.log(err)
       return
     }
+
     // Development only!
     // Only providing detailed error in development.
     return res
       .status(err.status)
-      .json(err)
+      .json({
+        status: err.status,
+        message: err.message,
+        innerException: err.innerException,
+        stack: err.stack
+      })
   })
 
   // Starts the HTTP server listening for connections.
-  app.listen(process.env.PORT, () => {
-    console.log(`Server running at http://localhost:${process.env.PORT}`)
+  app.listen(process.env.PORT_AUTH, () => {
+    console.log(`Server running at http://localhost:${process.env.PORT_AUTH}`)
     console.log('Press Ctrl-C to terminate...')
   })
 }
