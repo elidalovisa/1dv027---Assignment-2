@@ -174,7 +174,7 @@ export class AccountController {
       } else if (error.name === 'ValidationError') {
         // Validation error(s).
         err = createError(400)
-        console.log(err)
+        res.json(err)
         err.innerException = error
       }
 
