@@ -134,7 +134,6 @@ export class AccountController {
    * @param {Function} next - Express next middleware function.
    */
   async register (req, res, next) {
-    console.log('test')
     try {
       const user = await User.insert({
         email: req.body.email,
@@ -167,14 +166,11 @@ export class AccountController {
         })
     } catch (error) {
       let err = error
-
       if (err.code === 11000) {
         // Duplicated keys.
         err = createError(409)
         err.innerException = error
       } else if (error.name === 'ValidationError') {
-                console.log(err)
-
         // Validation error(s).
         err = createError(400)
         err.innerException = error
