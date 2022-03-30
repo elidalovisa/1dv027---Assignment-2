@@ -4,7 +4,7 @@
   "description": "1DV027 - Examinataion API",
   "engines": {
     "node": "16.x"
-  }
+  },
   "type": "module",
   "main": "server.js",
   "scripts": {
