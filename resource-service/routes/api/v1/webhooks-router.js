@@ -15,7 +15,7 @@ const webhooksController = new WebhooksController()
 // Map HTTP verbs and route paths to controller actions.
 router.post('/',
   (req, res, next) => webhooksController.authenticate(req, res, next),
-  (req, res, next) => webhooksController.indexPost(req, res, next)
+  (req, res, next) => webhooksController.endPoint(req, res, next)
 )
 
 router.post('/add', (req, res, next) => webhooksController.addHook(req, res, next)

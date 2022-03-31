@@ -11,16 +11,17 @@ import { Hook } from '../../models/webhooks.js'
  * Encapsulates a controller.
  */
 export class WebhooksController {
-  /**
-   * Authenticates the webhook.
+
+ /**
+   * Used to authenticate hook.
    *
    * @param {object} req - Express request object.
    * @param {object} res - Express response object.
    * @param {Function} next - Express next middleware function.
    */
-  authenticate (req, res, next) {
-    // Use the Heroku secret token to validate the received payload.
-    if (req.headers['x-gitlab-token'] !== process.env.WEBHOOK_SECRET) {
+  async authenticate (req, res, next) {
+    const key = await Hook.getById(req.body.key)
+      if (req.body.key !== key) {
       const error = new Error('Invalid token')
       error.status = 401
       next(error)
@@ -30,6 +31,9 @@ export class WebhooksController {
     next()
   }
 
+
+ 
+
  /**
    * Add a new catch for logged in user.
    *
@@ -38,7 +42,6 @@ export class WebhooksController {
    * @param {Function} next - Express next middleware function.
    */
   async addHook (req, res, next) {
-    console.log('test')
     try {
       const newHook = await Hook.insert({
         username: req.body.username,
