@@ -5,7 +5,7 @@
  * @version 1.0
  */
 
-import { Data } from '../../models/data.js'
+import { Hook } from '../../models/webhooks.js'
 
 /**
  * Encapsulates a controller.
@@ -28,6 +28,38 @@ export class WebhooksController {
     }
 
     next()
+  }
+
+ /**
+   * Add a new catch for logged in user.
+   *
+   * @param {object} req - Express request object.
+   * @param {object} res - Express response object.
+   * @param {Function} next - Express next middleware function.
+   */
+  async addHook (req, res, next) {
+    console.log('test')
+    try {
+      const newHook = await Hook.insert({
+        username: req.body.username,
+        url: req.body.url
+      })
+      await newHook.save()
+      res
+        .status(201)
+        .json({
+          message: 'Hook created. Save your secret key and use it in body: ' + newHook.id,
+        }
+        )
+    } catch (error) {
+      let err = error
+      if (error.name === 'ValidationError') {
+        // Validation error(s).
+        err = createError(400)
+        err.innerException = error
+      }
+      next(err)
+    }
   }
 
 

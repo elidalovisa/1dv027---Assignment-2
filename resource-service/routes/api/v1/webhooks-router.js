@@ -6,7 +6,7 @@
  */
 
 import express from 'express'
-import { WebhooksController } from '../../controllers/api/webhooks-controller.js'
+import { WebhooksController } from '../../../controllers/api/webhooks-controller.js'
 
 export const router = express.Router()
 
@@ -16,4 +16,7 @@ const webhooksController = new WebhooksController()
 router.post('/',
   (req, res, next) => webhooksController.authenticate(req, res, next),
   (req, res, next) => webhooksController.indexPost(req, res, next)
+)
+
+router.post('/add', (req, res, next) => webhooksController.addHook(req, res, next)
 )

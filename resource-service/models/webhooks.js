@@ -8,7 +8,7 @@
 import mongoose from 'mongoose'
 
 // Create a schema.
-const hooksSchema = new mongoose.Schema({
+const schema = new mongoose.Schema({
   username: {
     type: String,
     required: [true, 'Username is required.']
@@ -16,12 +16,10 @@ const hooksSchema = new mongoose.Schema({
   url: {
     type: String,
     required: [true, 'Url is required.']
-    unique: true
-  },
-  key: {
-    type: String,
-    required: [true, 'Key is required.']
-  }, {
+  }
+}, {
+  timestamps: true,
+  versionKey: false,
   toJSON: {
     /**
      * Performs a transformation of the resulting object to remove sensitive information.
@@ -44,7 +42,7 @@ schema.virtual('id').get(function () {
 })
 
 /**
- * Gets all fish catches.
+ * Gets all hooks.
  *
  * @returns {Promise<Data[]>} The Promise to be fulfilled.
  */
@@ -53,7 +51,7 @@ schema.statics.getAll = async function () {
 }
 
 /**
- * Gets fish catch by ID.
+ * Get hook by ID.
  *
  * @param {string} id - The value of the id for the catch to get.
  * @returns {object} data.
@@ -63,17 +61,17 @@ schema.statics.getById = async function (id) {
 }
 
 /**
- * Gets all hooks by username.
+ * Gets all hooks from user.
  *
  * @param {string} username - The value of the id for the catch to get.
  * @returns {object} data.
  */
-schema.statics.getHooksByUser = async function (username) {
+schema.statics.getHookUser = async function (username) {
   return this.find({ username: username })
 }
 
 /**
- * Inserts a new hook.
+ * Inserts a new fish catch.
  *
  * @param {object} data - ...
  * @param {string} data.description - ...
@@ -84,7 +82,6 @@ schema.statics.insert = async function (data) {
   const newData = new Hook(data)
   return newData.save()
 }
-
 
 /**
  * Deletes data.
