@@ -108,13 +108,38 @@ export class WebhooksController {
    * @param {Function} next - Express next middleware function.
    */
   async getHook (req, res, next) {
-    console.log('test')
     try {
-      const data = await Data.findAll()
+      const data = await Hook.getById(req.body.key)
+      console.log(data)
       res
         .status(201)
         .json({
           data: data})
+    } catch (error) {
+      let err = error
+      if (error.name === 'ValidationError') {
+        // Validation error(s).
+        err = createError(400)
+        err.innerException = error
+      }
+      next(err)
+    }
+  }
+
+  /**
+   * Remove hook.
+   *
+   * @param {object} req - Express request object.
+   * @param {object} res - Express response object.
+   * @param {Function} next - Express next middleware function.
+   */
+  async deleteHook (req, res, next) {
+    try {
+    await req.data.delete()
+      res
+        .status(200)
+        .json({
+         message: 'Webhook removed.'})
     } catch (error) {
       let err = error
       if (error.name === 'ValidationError') {

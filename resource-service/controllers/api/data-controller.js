@@ -8,6 +8,8 @@
 import createError from 'http-errors'
 import { Data } from '../../models/data.js'
 import { User } from '../../../auth-service/models/user.js'
+import { Hook } from '../../models/webhooks.js'
+import fetch from 'node-fetch'
 
 /**
  * Encapsulates a controller.
@@ -213,11 +215,42 @@ export class DataController {
         description: 'Show all catches from all users.'
       }]
       await data.save()
+      // Notify webhook subscribers
+      const subscribers = await Hook.find({})
+       const getUrls = subscribers.map(getUrl => ({
+        url: getUrl.url
+      }))
+      getUrls.shift()
+      await Promise.all(getUrls.map(getUrl => {
+        console.log(getUrl)
+        fetch(getUrl.url,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(data)
+       })
+      }))
+   /*   const getUrls = subscribers.map(getUrl => ({
+        url: getUrl.url
+      }))
+      console.log(getUrls)
+     for(let i = 0; i < getUrls.length; i++) {
+ const notify = await fetch(getUrls,
+  {
+         method: 'POST',
+          headers: {
+        //    'PRIVATE-TOKEN': process.env.PERSONAL_TOKEN,
+            'Content-Type': 'application/json'
+          },
+          data: data
+  }) 
+      } */
+    
       res
         .status(201)
-        .header('Cache-control', 'max-age=5')
         .json({
-          message: 'Data created.',
           links: urls
         }
         )
