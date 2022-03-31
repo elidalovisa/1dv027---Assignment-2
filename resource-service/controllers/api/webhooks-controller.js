@@ -6,6 +6,7 @@
  */
 
 import { Hook } from '../../models/webhooks.js'
+import { Data } from '../../models/data.js'
 
 /**
  * Encapsulates a controller.
@@ -21,21 +22,18 @@ export class WebhooksController {
    */
   async authenticate (req, res, next) {
     const key = await Hook.getById(req.body.key)
-      if (req.body.key !== key) {
+      if (req.body.key !== key.id) {
       const error = new Error('Invalid token')
       error.status = 401
       next(error)
       return
     }
-
     next()
   }
 
 
- 
-
  /**
-   * Add a new catch for logged in user.
+   * Create new hook.
    *
    * @param {object} req - Express request object.
    * @param {object} res - Express response object.
@@ -102,41 +100,30 @@ export class WebhooksController {
     }
   }
 
-  /**
-   * Notifies when a new catch has been added.
+   /**
+   * Get hook.
    *
    * @param {object} req - Express request object.
    * @param {object} res - Express response object.
    * @param {Function} next - Express next middleware function.
    */
-  async newCatch (req, res, next) {
+  async getHook (req, res, next) {
+    console.log('test')
     try {
-      let data = null
-      if (req.body.event_type === 'newCatch') {
-        data = new Data({
-        username: username,
-        fishType: req.body.fishType,
-        position: req.body.position,
-        nameOfLocation: req.body.nameOfLocation,
-        city: req.body.city,
-        weight: req.body.weight,
-        length: req.body.length        
-        })
-
-        await data.save()
-      }
-
-      // It is important to respond quickly!
-      res.status(200).end()
-
-      // Put this last because socket communication can take long time.
-      if (data) {
-        res.io.emit('catch/create', data.toObject())
-      }
+      const data = await Data.findAll()
+      res
+        .status(201)
+        .json({
+          data: data})
     } catch (error) {
-      const err = new Error('Internal Server Error')
-      err.status = 500
+      let err = error
+      if (error.name === 'ValidationError') {
+        // Validation error(s).
+        err = createError(400)
+        err.innerException = error
+      }
       next(err)
     }
   }
 }
+
