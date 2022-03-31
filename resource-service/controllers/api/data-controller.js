@@ -336,6 +336,7 @@ export class DataController {
    * @param {Function} next - Express next middleware function.
    */
    async getParam (req, res, next) {
+     // Add eror if wrong param (ex height)
 try {
    const weight = req.query.weight
     const length = req.query.length
