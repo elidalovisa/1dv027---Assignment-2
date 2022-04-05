@@ -222,7 +222,6 @@ export class DataController {
       }))
       getUrls.shift()
       await Promise.all(getUrls.map(getUrl => {
-        console.log(getUrl)
         fetch(getUrl.url,
         {
           method: 'POST',
@@ -232,25 +231,10 @@ export class DataController {
           body: JSON.stringify(data)
        })
       }))
-   /*   const getUrls = subscribers.map(getUrl => ({
-        url: getUrl.url
-      }))
-      console.log(getUrls)
-     for(let i = 0; i < getUrls.length; i++) {
- const notify = await fetch(getUrls,
-  {
-         method: 'POST',
-          headers: {
-        //    'PRIVATE-TOKEN': process.env.PERSONAL_TOKEN,
-            'Content-Type': 'application/json'
-          },
-          data: data
-  }) 
-      } */
-    
       res
         .status(201)
         .json({
+          message: data,
           links: urls
         }
         )
