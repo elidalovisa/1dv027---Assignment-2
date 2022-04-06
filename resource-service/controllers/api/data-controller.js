@@ -234,6 +234,7 @@ export class DataController {
       res
         .status(201)
         .json({
+          id: data.id,
           message: data,
           links: urls
         }
