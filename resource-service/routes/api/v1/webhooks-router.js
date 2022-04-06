@@ -90,6 +90,6 @@ router.get('/get',
 
 router.delete('/delete', 
 (req, res, next) => webhooksController.authenticate(req, res, next),
-(req, res, next) => webhooksController.removeHook(req, res, next)
+(req, res, next) => webhooksController.deleteHook(req, res, next)
 )
 
