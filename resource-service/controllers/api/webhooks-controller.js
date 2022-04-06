@@ -49,7 +49,7 @@ export class WebhooksController {
       res
         .status(201)
         .json({
-          message: 'Hook created. Save your secret key and use it in body: '
+          message: 'Hook created. Save your secret key and use it in body: ',
           key: newHook.id
         }
         )
