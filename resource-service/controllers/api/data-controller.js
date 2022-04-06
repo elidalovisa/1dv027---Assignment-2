@@ -403,7 +403,6 @@ try {
         .end()
   } catch (error) {
       let err = error
-      console.log(err)
       if (error.name === 'ValidationError') {
         // Validation error(s).
         err = createError(400)

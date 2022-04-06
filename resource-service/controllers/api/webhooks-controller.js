@@ -136,7 +136,7 @@ export class WebhooksController {
    */
   async deleteHook (req, res, next) {
     try {
-    await req.data.delete()
+     await req.body.key.delete()
       res
         .status(200)
         .json({
