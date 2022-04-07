@@ -49,7 +49,7 @@ export class WebhooksController {
       res
         .status(201)
         .json({
-          message: 'Hook created. Save your secret key and use it in body: ',
+          message: 'Hook created. Save your secret key and use it in URL.',
           key: newHook.id
         }
         )
@@ -110,8 +110,7 @@ export class WebhooksController {
    */
   async getHook (req, res, next) {
     try {
-      const data = await Hook.getById(req.body.key)
-      console.log(data)
+      const data = await Hook.getById(req.params.id)
       res
         .status(201)
         .json({
@@ -136,7 +135,7 @@ export class WebhooksController {
    */
   async deleteHook (req, res, next) {
     try {
-     await req.body.key.delete()
+     await req.data.delete()
       res
         .status(200)
         .json({

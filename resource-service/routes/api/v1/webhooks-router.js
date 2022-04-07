@@ -7,6 +7,7 @@
 
 import express from 'express'
 import { WebhooksController } from '../../../controllers/api/webhooks-controller.js'
+import { controller } from '../../../controllers/api/data-controller.js'
 
 export const router = express.Router()
 const webhooksController = new WebhooksController()
@@ -71,24 +72,29 @@ const authenticateJWT = (req, res, next) => {
 const hasPermission = (req, res, next, permissionLevel) => {
   req.user?.permissionLevel & permissionLevel ? next() : next(createError(403))
 }
+
+// Provide req.data to the route if :id is present in the route path.
+router.param('id', (req, res, next, id) => controller.loadData(req, res, next, id))
+
+
 // Map HTTP verbs and route paths to controller actions.
 router.get('/',
- // (req, res, next) => hasPermission(req, res, next, PermissionLevels.DELETE),
+  (req, res, next) => hasPermission(req, res, next, PermissionLevels.DELETE),
   (req, res, next) => webhooksController.endPoint(req, res, next)
 )
 
 router.post('/add', 
-//(req, res, next) => hasPermission(req, res, next, PermissionLevels.DELETE),
+(req, res, next) => hasPermission(req, res, next, PermissionLevels.DELETE),
 (req, res, next) => webhooksController.addHook(req, res, next)
 )
 
-router.get('/get', 
+router.get('/:id', 
 (req, res, next) => webhooksController.authenticate(req, res, next),
 (req, res, next) => webhooksController.getHook(req, res, next)
 )
 
 
-router.delete('/delete', 
+router.delete('/:id', 
 (req, res, next) => webhooksController.authenticate(req, res, next),
 (req, res, next) => webhooksController.deleteHook(req, res, next)
 )
