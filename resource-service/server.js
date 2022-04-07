@@ -33,7 +33,6 @@ const main = async () => {
 
   // Error handler.
   app.use(function (err, req, res, next) {
-    console.log(err)
     err.status = err.status || 500
 
     if (req.app.get('env') !== 'development') {

@@ -259,6 +259,7 @@ export class DataController {
    * @param {Function} next - Express next middleware function.
    */
   async getCatches(req, res, next) {
+       try {
     const userData = await Data.getByUser(req.user.username)
         const urls = [{
         rel: 'self',
@@ -296,6 +297,15 @@ export class DataController {
           data: userData,
           links: urls
         })
+          } catch (error) {
+      let err = error
+      if (error.name === 'ValidationError') {
+        // Validation error(s).
+        err = createError(400)
+        err.innerException = error
+      }
+      next(err)
+    }
   }
 
   /**
@@ -307,6 +317,7 @@ export class DataController {
    */
    async getCatch (req, res, next) {
     const userData = await Data.getById(req.params.id)
+    try {
     const urls = [{
         rel: 'self',
         method: 'GET',
@@ -343,7 +354,17 @@ export class DataController {
           data: userData,
           links: urls
         })
-   } 
+     } catch (error) {
+      let err = error
+      if (error.name === 'ValidationError') {
+        // Validation error(s).
+        err = createError(400)
+        err.innerException = error
+      }
+      next(err)
+    }
+  }
+
 
 
   /**

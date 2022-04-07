@@ -7,13 +7,11 @@
 
 import express from 'express'
 import createError from 'http-errors'
+import jwt from 'jsonwebtoken'
 import { WebhooksController } from '../../../controllers/api/webhooks-controller.js'
-import { DataController } from '../../../controllers/api/data-controller.js'
 
 export const router = express.Router()
 const webhooksController = new WebhooksController()
-const controller = new DataController()
-
 
 // ------------------------------------------------------------------------------
 //  Helpers
@@ -43,7 +41,6 @@ const authenticateJWT = (req, res, next) => {
     next(createError(401))
     return
   }
-
   try {
     const payload = jwt.verify(authorization[1], process.env.PERSONAL_ACCESS_TOKEN, {
       algorithm: 'HS256' // 'RS256'
@@ -75,28 +72,33 @@ const hasPermission = (req, res, next, permissionLevel) => {
   req.user?.permissionLevel & permissionLevel ? next() : next(createError(403))
 }
 
-// Provide req.data to the route if :id is present in the route path.
-router.param('id', (req, res, next, id) => controller.loadData(req, res, next, id))
+// ------------------------------------------------------------------------------
+//  Routes
+// ------------------------------------------------------------------------------
 
 
 // Map HTTP verbs and route paths to controller actions.
 router.get('/',
-  (req, res, next) => hasPermission(req, res, next, PermissionLevels.DELETE),
   (req, res, next) => webhooksController.endPoint(req, res, next)
 )
 
 router.post('/add', 
+authenticateJWT,
 (req, res, next) => hasPermission(req, res, next, PermissionLevels.DELETE),
 (req, res, next) => webhooksController.addHook(req, res, next)
 )
 
-router.get('/:id', 
+router.get('/get', 
+authenticateJWT,
+(req, res, next) => hasPermission(req, res, next, PermissionLevels.DELETE),
 (req, res, next) => webhooksController.authenticate(req, res, next),
 (req, res, next) => webhooksController.getHook(req, res, next)
 )
 
 
-router.delete('/:id', 
+router.delete('/remove', 
+authenticateJWT,
+(req, res, next) => hasPermission(req, res, next, PermissionLevels.DELETE),
 (req, res, next) => webhooksController.authenticate(req, res, next),
 (req, res, next) => webhooksController.deleteHook(req, res, next)
 )

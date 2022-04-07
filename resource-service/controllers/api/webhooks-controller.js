@@ -23,14 +23,13 @@ export class WebhooksController {
   async authenticate (req, res, next) {
     const key = await Hook.getById(req.body.key)
       if (req.body.key !== key.id) {
-      const error = new Error('Invalid token')
+      const error = new Error('Invalid secret key')
       error.status = 401
       next(error)
       return
     }
     next()
   }
-
 
  /**
    * Create new hook.
@@ -49,7 +48,7 @@ export class WebhooksController {
       res
         .status(201)
         .json({
-          message: 'Hook created. Save your secret key and use it in URL.',
+          message: 'Hook created. Save your secret key and use it in the body as JSON.',
           key: newHook.id
         }
         )
@@ -84,7 +83,7 @@ export class WebhooksController {
       {
         method: 'POST',
         href: `${req.protocol}://${req.get('host')}${req.baseUrl}/webhook/add`,
-        description: ''
+        description: 'Add a new webhook. Put username and URL in body as JSON.'
       }
     ]
     try {
@@ -110,7 +109,7 @@ export class WebhooksController {
    */
   async getHook (req, res, next) {
     try {
-      const data = await Hook.getById(req.params.id)
+      const data = await Hook.getById(req.body.key)
       res
         .status(201)
         .json({
@@ -134,8 +133,9 @@ export class WebhooksController {
    * @param {Function} next - Express next middleware function.
    */
   async deleteHook (req, res, next) {
+    const data = await Hook.getById(req.body.key)
     try {
-     await req.data.delete()
+     await data.delete()
       res
         .status(200)
         .json({
