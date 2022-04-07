@@ -7,10 +7,11 @@
 
 import express from 'express'
 import { WebhooksController } from '../../../controllers/api/webhooks-controller.js'
-import { controller } from '../../../controllers/api/data-controller.js'
+import { Datacontroller } from '../../../controllers/api/data-controller.js'
 
 export const router = express.Router()
 const webhooksController = new WebhooksController()
+const controller = new DataController()
 
 
 // ------------------------------------------------------------------------------
