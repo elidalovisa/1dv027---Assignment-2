@@ -88,7 +88,7 @@ authenticateJWT,
 (req, res, next) => webhooksController.addHook(req, res, next)
 )
 
-router.get('/get', 
+router.get('/show', 
 authenticateJWT,
 (req, res, next) => hasPermission(req, res, next, PermissionLevels.DELETE),
 (req, res, next) => webhooksController.authenticate(req, res, next),
