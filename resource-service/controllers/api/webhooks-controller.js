@@ -77,13 +77,23 @@ export class WebhooksController {
       {
         rel: 'self',
         method: 'GET',
-        href: `${req.protocol}://${req.get('host')}${req.baseUrl}/webhook`,
+        href: `${req.protocol}://${req.get('host')}${req.baseUrl}`,
         description: 'Information about webhook.'
       },
       {
         method: 'POST',
-        href: `${req.protocol}://${req.get('host')}${req.baseUrl}/webhook/add`,
+        href: `${req.protocol}://${req.get('host')}${req.baseUrl}/add`,
         description: 'Add a new webhook. Put username and URL in body as JSON.'
+      },
+      {
+        method: 'GET',
+        href: `${req.protocol}://${req.get('host')}${req.baseUrl}/show`,
+        description: 'Show your webhook. Put key in body as JSON.'
+      },
+      {
+        method: 'DELETE',
+        href: `${req.protocol}://${req.get('host')}${req.baseUrl}/remove`,
+        description: ' Remove your webhook. Put key in body as JSON.'
       }
     ]
     try {
