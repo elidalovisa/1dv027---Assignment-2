@@ -1,0 +1,1097 @@
+{
+	"info": {
+		"_postman_id": "82405aee-1f32-4adb-836a-112f283e63e9",
+		"name": "es222vs RESTapi",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "api/v1",
+			"item": [
+				{
+					"name": "Auth",
+					"item": [
+						{
+							"name": "POST - Register",
+							"item": [
+								{
+									"name": "Register",
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n\"username\": \"elsa\",\r\n  \"email\": \"elsa@test.se\",\r\n  \"password\": \"hejhej123456789\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "https://es222vsapi.herokuapp.com/api/v1/users/register",
+											"protocol": "https",
+											"host": [
+												"es222vsapi",
+												"herokuapp",
+												"com"
+											],
+											"path": [
+												"api",
+												"v1",
+												"users",
+												"register"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "409 Register",
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n\"username\": \"elsa\",\r\n  \"email\": \"elsa@test.se\",\r\n  \"password\": \"hejhej123456789\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "https://es222vsapi.herokuapp.com/api/v1/users/register",
+											"protocol": "https",
+											"host": [
+												"es222vsapi",
+												"herokuapp",
+												"com"
+											],
+											"path": [
+												"api",
+												"v1",
+												"users",
+												"register"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "400 Register",
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n\"username\": \"elsa\",\r\n\"password\": \"hejhej123456789\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "https://es222vsapi.herokuapp.com/api/v1/users/register",
+											"protocol": "https",
+											"host": [
+												"es222vsapi",
+												"herokuapp",
+												"com"
+											],
+											"path": [
+												"api",
+												"v1",
+												"users",
+												"register"
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						},
+						{
+							"name": "POST - Login",
+							"item": [
+								{
+									"name": "Login",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"let response = pm.response.json();\r",
+													"pm.environment.set(\"jwtTokenCloud\", response['access_token']);\r",
+													"\r",
+													""
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n  \"email\": \"elsaArr@test.se\",\r\n  \"password\": \"hejhej123456789\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "https://es222vsapi.herokuapp.com/api/v1/users/login",
+											"protocol": "https",
+											"host": [
+												"es222vsapi",
+												"herokuapp",
+												"com"
+											],
+											"path": [
+												"api",
+												"v1",
+												"users",
+												"login"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "401 Login",
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n  \"email\": \"elsa@test.se\",\r\n  \"password\": \"hejhej123456789xxx\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "https://es222vsapi.herokuapp.com/api/v1/users/login",
+											"protocol": "https",
+											"host": [
+												"es222vsapi",
+												"herokuapp",
+												"com"
+											],
+											"path": [
+												"api",
+												"v1",
+												"users",
+												"login"
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						},
+						{
+							"name": "All Users",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"fishType\": \"Cod\",\r\n  \"position\": \"x y z\",\r\n  \"nameOfLocation\": \"Atlantic\",\r\n  \"city\": \"Mar del Plata\",\r\n  \"weight\": \"20 kg\",\r\n  \"length\": \"75 cm\",\r\n  \"imageURL\": \"http://catchimages.se/123\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "https://es222vsapi.herokuapp.com/api/v1/users",
+									"protocol": "https",
+									"host": [
+										"es222vsapi",
+										"herokuapp",
+										"com"
+									],
+									"path": [
+										"api",
+										"v1",
+										"users"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Resource",
+					"item": [
+						{
+							"name": "POST - Catch",
+							"item": [
+								{
+									"name": "201 Add Catch",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{jwtTokenCloud}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n  \"fishType\": \"Cod\",\r\n  \"position\": \"x y z\",\r\n  \"nameOfLocation\": \"Atlantic\",\r\n  \"city\": \"Mar del Plata\",\r\n  \"weight\": \"20 kg\",\r\n  \"length\": \"75 cm\",\r\n  \"imageURL\": \"http://catchimages.se/123\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "https://es222vsapi.herokuapp.com/api/v1/users/catches",
+											"protocol": "https",
+											"host": [
+												"es222vsapi",
+												"herokuapp",
+												"com"
+											],
+											"path": [
+												"api",
+												"v1",
+												"users",
+												"catches"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "401 Add Catch",
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n  \"fishType\": \"Cod\",\r\n  \"position\": \"x y z\",\r\n  \"nameOfLocation\": \"Atlantic\",\r\n  \"city\": \"Mar del Plata\",\r\n  \"weight\": \"20 kg\",\r\n  \"length\": \"75 cm\",\r\n  \"imageURL\": \"http://catchimages.se/123\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "https://es222vsapi.herokuapp.com/api/v1/users/catches",
+											"protocol": "https",
+											"host": [
+												"es222vsapi",
+												"herokuapp",
+												"com"
+											],
+											"path": [
+												"api",
+												"v1",
+												"users",
+												"catches"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "403 Add Catch",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImVsc2ExIiwiZW1haWwiOiJ0ZXN0MUBsbnUuc2UiLCJwZXJtaXNzaW9uTGV2ZWwiOjgsImlhdCI6MTY0OTE0Mzc3OSwiZXhwIjoxNjQ5MTQ3Mzc5fQ.OqJTgZqI4rHHeD2CjLuP5UmppCDng3OEL0RNy9479YU",
+													"type": "string"
+												}
+											]
+										},
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n  \"fishType\": \"Cod\",\r\n  \"position\": \"x y z\",\r\n  \"nameOfLocation\": \"Atlantic\",\r\n  \"city\": \"Mar del Plata\",\r\n  \"weight\": \"20 kg\",\r\n  \"length\": \"75 cm\",\r\n  \"imageURL\": \"http://catchimages.se/123\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "https://es222vsapi.herokuapp.com/api/v1/users/catches",
+											"protocol": "https",
+											"host": [
+												"es222vsapi",
+												"herokuapp",
+												"com"
+											],
+											"path": [
+												"api",
+												"v1",
+												"users",
+												"catches"
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						},
+						{
+							"name": "GET - Collection",
+							"item": [
+								{
+									"name": "401 User Collection",
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "https://es222vsapi.herokuapp.com/api/v1/users/catches",
+											"protocol": "https",
+											"host": [
+												"es222vsapi",
+												"herokuapp",
+												"com"
+											],
+											"path": [
+												"api",
+												"v1",
+												"users",
+												"catches"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "401 All Users Collection",
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "https://es222vsapi.herokuapp.com/api/v1/users/catches/all",
+											"protocol": "https",
+											"host": [
+												"es222vsapi",
+												"herokuapp",
+												"com"
+											],
+											"path": [
+												"api",
+												"v1",
+												"users",
+												"catches",
+												"all"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "200 All Users Collection",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{jwtTokenCloud}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "https://es222vsapi.herokuapp.com/api/v1/users/catches/all",
+											"protocol": "https",
+											"host": [
+												"es222vsapi",
+												"herokuapp",
+												"com"
+											],
+											"path": [
+												"api",
+												"v1",
+												"users",
+												"catches",
+												"all"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "200 User Collection",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{jwtTokenCloud}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "https://es222vsapi.herokuapp.com/api/v1/users/catches",
+											"protocol": "https",
+											"host": [
+												"es222vsapi",
+												"herokuapp",
+												"com"
+											],
+											"path": [
+												"api",
+												"v1",
+												"users",
+												"catches"
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						},
+						{
+							"name": "GET - Catch",
+							"item": [
+								{
+									"name": "200 Catch ID",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{jwtTokenCloud}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "https://es222vsapi.herokuapp.com/api/v1/users/catches/624d3e2287c37cb8ea9a40cb",
+											"protocol": "https",
+											"host": [
+												"es222vsapi",
+												"herokuapp",
+												"com"
+											],
+											"path": [
+												"api",
+												"v1",
+												"users",
+												"catches",
+												"624d3e2287c37cb8ea9a40cb"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "200 Parameters",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{jwtTokenCloud}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "https://es222vsapi.herokuapp.com/api/v1/users/catches/fish/details/?weight=10&length=20",
+											"protocol": "https",
+											"host": [
+												"es222vsapi",
+												"herokuapp",
+												"com"
+											],
+											"path": [
+												"api",
+												"v1",
+												"users",
+												"catches",
+												"fish",
+												"details",
+												""
+											],
+											"query": [
+												{
+													"key": "weight",
+													"value": "10"
+												},
+												{
+													"key": "length",
+													"value": "20"
+												}
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "401 Parameters",
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "https://es222vsapi.herokuapp.com/api/v1/users/catches/fish/details/?weight=10&length=20",
+											"protocol": "https",
+											"host": [
+												"es222vsapi",
+												"herokuapp",
+												"com"
+											],
+											"path": [
+												"api",
+												"v1",
+												"users",
+												"catches",
+												"fish",
+												"details",
+												""
+											],
+											"query": [
+												{
+													"key": "weight",
+													"value": "10"
+												},
+												{
+													"key": "length",
+													"value": "20"
+												}
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "401 Catch ID",
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "https://es222vsapi.herokuapp.com/api/v1/users/catches/624d3e2287c37cb8ea9a40cb",
+											"protocol": "https",
+											"host": [
+												"es222vsapi",
+												"herokuapp",
+												"com"
+											],
+											"path": [
+												"api",
+												"v1",
+												"users",
+												"catches",
+												"624d3e2287c37cb8ea9a40cb"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "500 Catch ID",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{jwtTokenCloud}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "https://es222vsapi.herokuapp.com/api/v1/users/catches/624d3e2287c37cb8ea9a40c",
+											"protocol": "https",
+											"host": [
+												"es222vsapi",
+												"herokuapp",
+												"com"
+											],
+											"path": [
+												"api",
+												"v1",
+												"users",
+												"catches",
+												"624d3e2287c37cb8ea9a40c"
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						},
+						{
+							"name": "PUT - Catch",
+							"item": [
+								{
+									"name": "200 Update Catch",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{jwtTokenCloud}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "PUT",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n  \"fishType\": \"Cod\",\r\n  \"position\": \"x y z\",\r\n  \"nameOfLocation\": \"Atlantic\",\r\n  \"city\": \"Atlantic Beach\",\r\n  \"weight\": \"20 kg\",\r\n  \"length\": \"75 cm\",\r\n  \"imageURL\": \"http://catchimages.se/123\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "https://es222vsapi.herokuapp.com/api/v1/users/catches/624d3e2287c37cb8ea9a40cb",
+											"protocol": "https",
+											"host": [
+												"es222vsapi",
+												"herokuapp",
+												"com"
+											],
+											"path": [
+												"api",
+												"v1",
+												"users",
+												"catches",
+												"624d3e2287c37cb8ea9a40cb"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "500 Update Catch",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{jwtTokenCloud}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "PUT",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n  \"fishType\": \"Cod\",\r\n  \"position\": \"x y z\",\r\n  \"nameOfLocation\": \"Atlantic\",\r\n  \"city\": \"Atlantic Beach\",\r\n  \"weight\": \"20 kg\",\r\n  \"length\": \"75 cm\",\r\n  \"imageURL\": \"http://catchimages.se/123\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "https://es222vsapi.herokuapp.com/api/v1/users/catches/624d3e2287c37cb8ea9a40",
+											"protocol": "https",
+											"host": [
+												"es222vsapi",
+												"herokuapp",
+												"com"
+											],
+											"path": [
+												"api",
+												"v1",
+												"users",
+												"catches",
+												"624d3e2287c37cb8ea9a40"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "401 Update Catch",
+									"request": {
+										"auth": {
+											"type": "noauth"
+										},
+										"method": "PUT",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n  \"fishType\": \"Cod\",\r\n  \"position\": \"x y z\",\r\n  \"nameOfLocation\": \"Atlantic\",\r\n  \"city\": \"Atlantic Beach\",\r\n  \"weight\": \"20 kg\",\r\n  \"length\": \"75 cm\",\r\n  \"imageURL\": \"http://catchimages.se/123\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "https://es222vsapi.herokuapp.com/api/v1/users/catches/624d3e2287c37cb8ea9a40cb",
+											"protocol": "https",
+											"host": [
+												"es222vsapi",
+												"herokuapp",
+												"com"
+											],
+											"path": [
+												"api",
+												"v1",
+												"users",
+												"catches",
+												"624d3e2287c37cb8ea9a40cb"
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						},
+						{
+							"name": "DELETE - Catch",
+							"item": [
+								{
+									"name": "200  Remove Catch",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{jwtTokenCloud}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "DELETE",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n  \"fishType\": \"Cod\",\r\n  \"position\": \"x y z\",\r\n  \"nameOfLocation\": \"Atlantic\",\r\n  \"city\": \"Atlantic Beach\",\r\n  \"weight\": \"20 kg\",\r\n  \"length\": \"75 cm\",\r\n  \"imageURL\": \"http://catchimages.se/123\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "https://es222vsapi.herokuapp.com/api/v1/users/catches/{{catchID}}",
+											"protocol": "https",
+											"host": [
+												"es222vsapi",
+												"herokuapp",
+												"com"
+											],
+											"path": [
+												"api",
+												"v1",
+												"users",
+												"catches",
+												"{{catchID}}"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "401  Remove Catch",
+									"request": {
+										"auth": {
+											"type": "noauth"
+										},
+										"method": "DELETE",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n  \"fishType\": \"Cod\",\r\n  \"position\": \"x y z\",\r\n  \"nameOfLocation\": \"Atlantic\",\r\n  \"city\": \"Atlantic Beach\",\r\n  \"weight\": \"20 kg\",\r\n  \"length\": \"75 cm\",\r\n  \"imageURL\": \"http://catchimages.se/123\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "https://es222vsapi.herokuapp.com/api/v1/users/catches/{{catchID}}",
+											"protocol": "https",
+											"host": [
+												"es222vsapi",
+												"herokuapp",
+												"com"
+											],
+											"path": [
+												"api",
+												"v1",
+												"users",
+												"catches",
+												"{{catchID}}"
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						},
+						{
+							"name": "Entrypoint",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"fishType\": \"Cod\",\r\n  \"position\": \"x y z\",\r\n  \"nameOfLocation\": \"Atlantic\",\r\n  \"city\": \"Mar del Plata\",\r\n  \"weight\": \"20 kg\",\r\n  \"length\": \"75 cm\",\r\n  \"imageURL\": \"http://catchimages.se/123\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "https://es222vsapi.herokuapp.com/api/v1",
+									"protocol": "https",
+									"host": [
+										"es222vsapi",
+										"herokuapp",
+										"com"
+									],
+									"path": [
+										"api",
+										"v1"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "404 Wrong URL",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "https://es222vsapi.herokuapp.com/api/v1/user",
+									"protocol": "https",
+									"host": [
+										"es222vsapi",
+										"herokuapp",
+										"com"
+									],
+									"path": [
+										"api",
+										"v1",
+										"user"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Webhook",
+					"item": [
+						{
+							"name": "Endpoint",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "https://es222vsapi.herokuapp.com/api/v1/webhooks",
+									"protocol": "https",
+									"host": [
+										"es222vsapi",
+										"herokuapp",
+										"com"
+									],
+									"path": [
+										"api",
+										"v1",
+										"webhooks"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Add Hook",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"let response = pm.response.json();\r",
+											"pm.environment.set(\"hookID\", response['key']);\r",
+											"\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{jwtTokenCloud}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{ \"username\": \"elsa\",\r\n\"url\": \"https://webhook.site/e0331398-1371-4e84-bbfd-ad48a211152c\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "https://es222vsapi.herokuapp.com/api/v1/webhooks/add",
+									"protocol": "https",
+									"host": [
+										"es222vsapi",
+										"herokuapp",
+										"com"
+									],
+									"path": [
+										"api",
+										"v1",
+										"webhooks",
+										"add"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get Hook",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{jwtTokenCloud}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{ \r\n  \"key\": \"{{hookID}}\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "https://es222vsapi.herokuapp.com/api/v1/webhooks/get",
+									"protocol": "https",
+									"host": [
+										"es222vsapi",
+										"herokuapp",
+										"com"
+									],
+									"path": [
+										"api",
+										"v1",
+										"webhooks",
+										"get"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Remove Hook",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{jwtTokenCloud}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "DELETE",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{ \r\n  \"key\": \"{{hookID}}\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "https://es222vsapi.herokuapp.com/api/v1/webhooks/remove",
+									"protocol": "https",
+									"host": [
+										"es222vsapi",
+										"herokuapp",
+										"com"
+									],
+									"path": [
+										"api",
+										"v1",
+										"webhooks",
+										"remove"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		}
+	]
+}

@@ -1,0 +1,61 @@
+﻿Auth-service
+
+
+GET Endpoint 
+https://es222vsapi.herokuapp.com/api/v1
+
+
+GET All Users
+https://es222vsapi.herokuapp.com/api/v1/users
+
+
+POST Register User
+https://es222vsapi.herokuapp.com/api/v1/users/register
+
+
+POST Login User
+https://es222vsapi.herokuapp.com/api/v1/users/login
+
+
+Resource-service
+
+GET All Catches For All Users
+https://es222vsapi.herokuapp.com/api/v1/users/catches
+
+
+POST Add Catch For User
+https://es222vsapi.herokuapp.com/api/v1/users/catches
+
+
+GET Specific Catch From Logged In User
+https://es222vsapi.herokuapp.com/api/v1/users/catches/:id
+
+
+PUT Update Specific Catch
+https://es222vsapi.herokuapp.com/api/v1/users/catches/:id
+
+
+DELETE Remove Specific Catch
+https://es222vsapi.herokuapp.com/api/v1/users/catches/:id
+
+
+GET Catch WIth Specific Parameters (example: ?weight=20&length=15)
+https://es222vsapi.herokuapp.com/api/v1/users/catches/fish/details
+
+
+Webhook
+
+GET Endpoint 
+https://es222vsapi.herokuapp.com/api/v1/webhooks
+
+
+POST Webhook
+https://es222vsapi.herokuapp.com/api/v1/webhooks/add
+
+
+GET Webhook
+https://es222vsapi.herokuapp.com/api/v1/show
+
+
+DELETE Webhook
+https://es222vsapi.herokuapp.com/api/v1/delete
